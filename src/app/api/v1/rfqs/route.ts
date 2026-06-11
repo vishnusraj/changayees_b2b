@@ -1,11 +1,39 @@
 import { type NextRequest } from 'next/server';
 import { withApi } from '@/lib/api/route';
-import { created } from '@/lib/api/response';
+import { created, okWithMeta } from '@/lib/api/response';
 import { readJson } from '@/lib/api/request';
+import { authorize } from '@/lib/api/guards';
 import { rfqSubmitSchema } from '@/lib/validation/rfq';
-import { createRfq } from '@/features/rfq/rfq.service';
+import { createRfq, listRfqs } from '@/features/rfq/rfq.service';
 import { rateLimit, clientIp } from '@/lib/rate-limit';
 import { ApiError } from '@/lib/api/errors';
+import { RfqStatus } from '@/generated/prisma';
+
+export const dynamic = 'force-dynamic';
+
+/** GET /api/v1/rfqs — list RFQs for the admin portal (filters: status, search). */
+export const GET = withApi(async (req: NextRequest) => {
+  await authorize(req, 'rfqs.view');
+  const sp = new URL(req.url).searchParams;
+  const statusParam = sp.get('status');
+
+  const result = await listRfqs({
+    page: Number(sp.get('page') ?? 1) || 1,
+    limit: Number(sp.get('limit') ?? 20) || 20,
+    status:
+      statusParam && statusParam in RfqStatus
+        ? (statusParam as RfqStatus)
+        : undefined,
+    search: sp.get('search') ?? undefined,
+  });
+
+  return okWithMeta(result.rfqs, {
+    page: result.page,
+    limit: result.limit,
+    total: result.total,
+    totalPages: result.totalPages,
+  });
+});
 
 /**
  * POST /api/v1/rfqs — submit a Request for Quote (public, from the wizard).

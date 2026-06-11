@@ -18,9 +18,10 @@ const ADMIN_NAV = [
   { label: 'Orders', href: '/admin/orders' },
   { label: 'Leads', href: '/admin/leads' },
   { label: 'RFQs', href: '/admin/rfqs' },
-  { label: 'Products', href: '/admin/products' },
+  { label: 'Products', href: '/admin/cms/products' },
   { label: 'CMS', href: '/admin/cms' },
   { label: 'Media', href: '/admin/media' },
+  { label: 'Analytics', href: '/admin/analytics' },
   { label: 'Settings', href: '/admin/settings' },
 ];
 

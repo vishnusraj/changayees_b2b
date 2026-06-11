@@ -7,7 +7,7 @@
  * (signed S3 uploads, architecture M-11). Node runtime only (Prisma).
  */
 import { prisma } from '@/lib/prisma';
-import { RfqType, LeadSource } from '@/generated/prisma';
+import { RfqType, LeadSource, type RfqStatus, type Prisma } from '@/generated/prisma';
 import { captureLead, normalizePhone } from '@/features/leads/lead.service';
 import { track, ANALYTICS_EVENTS } from '@/services/analytics.service';
 
@@ -99,4 +99,98 @@ export async function createRfq(
   });
 
   return { rfqNumber };
+}
+
+// ---------------------------------------------------------------------------
+// Admin: list RFQs
+// ---------------------------------------------------------------------------
+
+export interface RfqListItem {
+  id: string;
+  rfqNumber: string;
+  organization: string;
+  contactPerson: string;
+  phone: string;
+  email: string | null;
+  location: string | null;
+  expectedQuantity: number | null;
+  expectedDelivery: string | null;
+  status: string;
+  itemCount: number;
+  leadId: string | null;
+  createdAt: string;
+}
+
+export interface ListRfqsParams {
+  page?: number;
+  limit?: number;
+  status?: RfqStatus;
+  search?: string;
+}
+
+export interface RfqListResult {
+  rfqs: RfqListItem[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+/** Paginated RFQ list for the admin portal (filters: status, search). */
+export async function listRfqs(
+  params: ListRfqsParams = {},
+): Promise<RfqListResult> {
+  const page = Math.max(1, params.page ?? 1);
+  const limit = params.limit ?? 20;
+
+  const where: Prisma.RfqWhereInput = {
+    deletedAt: null,
+    ...(params.status ? { status: params.status } : {}),
+    ...(params.search
+      ? {
+          OR: [
+            { rfqNumber: { contains: params.search, mode: 'insensitive' } },
+            { organization: { contains: params.search, mode: 'insensitive' } },
+            { contactPerson: { contains: params.search, mode: 'insensitive' } },
+            { phone: { contains: params.search } },
+            { email: { contains: params.search, mode: 'insensitive' } },
+          ],
+        }
+      : {}),
+  };
+
+  const [total, rows] = await Promise.all([
+    prisma.rfq.count({ where }),
+    prisma.rfq.findMany({
+      where,
+      include: { _count: { select: { items: true } } },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+  ]);
+
+  return {
+    rfqs: rows.map((r) => ({
+      id: r.id,
+      rfqNumber: r.rfqNumber,
+      organization: r.organization,
+      contactPerson: r.contactPerson,
+      phone: r.phone,
+      email: r.email,
+      location: r.location,
+      expectedQuantity: r.expectedQuantity,
+      expectedDelivery: r.expectedDelivery
+        ? r.expectedDelivery.toISOString()
+        : null,
+      status: r.status,
+      itemCount: r._count.items,
+      leadId: r.leadId,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    total,
+    page,
+    limit,
+    totalPages: Math.max(1, Math.ceil(total / limit)),
+  };
 }
