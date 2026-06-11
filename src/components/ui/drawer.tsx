@@ -38,6 +38,9 @@ export function Drawer({
 }: DrawerProps) {
   const [mounted, setMounted] = React.useState(false);
 
+  const panelRef = React.useRef<HTMLDivElement>(null);
+  const restoreFocusRef = React.useRef<HTMLElement | null>(null);
+
   React.useEffect(() => setMounted(true), []);
 
   React.useEffect(() => {
@@ -47,25 +50,39 @@ export function Drawer({
     };
     document.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
+
+    // Move focus into the dialog; restore it to the trigger on close (a11y).
+    restoreFocusRef.current = document.activeElement as HTMLElement | null;
+    const t = window.setTimeout(() => panelRef.current?.focus(), 0);
+
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
+      window.clearTimeout(t);
+      restoreFocusRef.current?.focus?.();
     };
   }, [open, onClose]);
 
   if (!mounted || !open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 z-[60]"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+    >
       <button
         aria-label="Close"
         onClick={onClose}
         className="absolute inset-0 animate-fade-in bg-black/40"
       />
       <div
+        ref={panelRef}
+        tabIndex={-1}
         data-state="open"
         className={cn(
-          'absolute flex flex-col bg-background shadow-elevation-4 transition-transform duration-200 ease-out-soft',
+          'absolute flex flex-col bg-background shadow-elevation-4 outline-none transition-transform duration-200 ease-out-soft',
           sideClasses[side],
           className,
         )}

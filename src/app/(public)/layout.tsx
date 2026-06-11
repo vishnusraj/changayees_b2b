@@ -23,12 +23,22 @@ export default function PublicLayout({
   return (
     <MobileShellProvider>
       <JsonLd data={siteGraph()} />
+      <a
+        href="#main-content"
+        className="focus-ring sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+      >
+        Skip to content
+      </a>
       <div className="flex min-h-dvh flex-col">
         <DesktopHeader />
         <MobileHeader />
 
         {/* pb-20 keeps content clear of the mobile bottom nav / sticky CTA */}
-        <main className="scroll-touch flex-1 overflow-x-hidden pb-20 md:pb-0">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="scroll-touch flex-1 overflow-x-hidden pb-20 outline-none md:pb-0"
+        >
           {children}
         </main>
 

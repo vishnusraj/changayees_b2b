@@ -5,13 +5,17 @@ import { readJson } from '@/lib/api/request';
 import { inquirySchema } from '@/lib/validation/inquiry';
 import { captureLead } from '@/features/leads/lead.service';
 import { LeadSource } from '@/generated/prisma';
+import { rateLimit, clientIp } from '@/lib/rate-limit';
+import { ApiError } from '@/lib/api/errors';
 
 /**
  * POST /api/v1/inquiries — product inquiry (quick inquiry).
  * Captures a deduped lead (source = PRODUCT_INQUIRY).
- * TODO(security): add captcha + rate limiting before launch (M-10).
  */
 export const POST = withApi(async (req: NextRequest) => {
+  if (!rateLimit(`inquiry:${clientIp(req)}`, 8, 60_000)) {
+    throw ApiError.rateLimited('Too many requests. Please try again shortly.');
+  }
   const body = inquirySchema.parse(await readJson(req));
 
   const productLine = body.productName ?? body.productSlug;
