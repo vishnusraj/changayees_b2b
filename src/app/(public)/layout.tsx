@@ -34,10 +34,13 @@ export default function PublicLayout({
         <MobileHeader />
 
         {/* pb-20 keeps content clear of the mobile bottom nav / sticky CTA */}
+        {/* overflow-x-clip (not -hidden): clips horizontal overflow without
+            turning <main> into a height-constrained vertical scroll container,
+            which would stop the page from scrolling. */}
         <main
           id="main-content"
           tabIndex={-1}
-          className="scroll-touch flex-1 overflow-x-hidden pb-20 outline-none md:pb-0"
+          className="flex-1 overflow-x-clip pb-20 outline-none md:pb-0"
         >
           {children}
         </main>
