@@ -1,0 +1,305 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+ * CHANGAYEES DESIGN FOUNDATION
+ * Source: CHANGAYEES_DESIGN_SYSTEM.md
+ *
+ * Token format: HSL channels only ("H S% L%") so Tailwind can compose alpha via
+ * `hsl(var(--x) / <alpha-value>)`, enabling opacity utilities (e.g. bg-primary/10).
+ * Brand hues are derived from the official Changayees logo (blue / teal / magenta).
+ * ========================================================================== */
+
+@layer base {
+  :root {
+    /* ---- Surfaces & text (shadcn-compatible) ---- */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* ---- Primary = Changayees logo blue ---- */
+    --primary: 202 80% 44%;
+    --primary-foreground: 0 0% 100%;
+
+    /* ---- Secondary = dark navy (headers, footer) ---- */
+    --secondary: 222 47% 16%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 42%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 16%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 202 80% 44%;
+
+    /* ---- Neutral scale (50 → 900) ---- */
+    --neutral-50: 210 40% 98%;
+    --neutral-100: 210 40% 96%;
+    --neutral-200: 214 32% 91%;
+    --neutral-300: 213 27% 84%;
+    --neutral-400: 215 20% 65%;
+    --neutral-500: 215 16% 47%;
+    --neutral-600: 215 19% 35%;
+    --neutral-700: 215 25% 27%;
+    --neutral-800: 217 33% 17%;
+    --neutral-900: 222 47% 11%;
+
+    /* ---- Brand palette ---- */
+    --brand-blue: 202 80% 44%;
+    --brand-teal: 168 76% 40%;
+    --brand-magenta: 330 78% 58%;
+    --brand-navy: 222 47% 16%;
+
+    /* ---- WhatsApp ---- */
+    --whatsapp: 142 70% 45%;
+    --whatsapp-foreground: 0 0% 100%;
+
+    /* ---- Semantic ---- */
+    --success: 142 65% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 11%;
+    --danger: 0 72% 51%;
+    --danger-foreground: 0 0% 100%;
+    --info: 202 80% 44%;
+    --info-foreground: 0 0% 100%;
+
+    /* ---- Order-tracking status hues ---- */
+    --status-confirmed: 202 80% 44%; /* blue */
+    --status-production: 28 90% 52%; /* orange */
+    --status-quality: 270 60% 56%; /* purple */
+    --status-dispatch: 178 70% 40%; /* teal */
+    --status-delivered: 142 65% 40%; /* green */
+
+    /* ---- Radius (Design System: S / M / L / XL / 2XL) ---- */
+    --radius: 0.75rem;
+
+    /* ---- Elevation (subtle, no heavy shadows) ---- */
+    --shadow-1: 0 1px 2px 0 hsl(222 47% 11% / 0.04), 0 1px 3px 0 hsl(222 47% 11% / 0.06);
+    --shadow-2: 0 2px 4px -1px hsl(222 47% 11% / 0.06), 0 4px 8px -2px hsl(222 47% 11% / 0.08);
+    --shadow-3: 0 8px 16px -4px hsl(222 47% 11% / 0.08), 0 4px 8px -2px hsl(222 47% 11% / 0.06);
+    --shadow-4: 0 16px 32px -8px hsl(222 47% 11% / 0.12), 0 8px 16px -4px hsl(222 47% 11% / 0.08);
+  }
+
+  .dark {
+    --background: 222 47% 9%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 12%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 202 80% 52%;
+    --primary-foreground: 222 47% 9%;
+
+    --secondary: 217 33% 20%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 18%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 20%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 22%;
+    --input: 217 33% 22%;
+    --ring: 202 80% 52%;
+
+    /* Neutral scale inverts for dark surfaces */
+    --neutral-50: 222 47% 11%;
+    --neutral-100: 217 33% 15%;
+    --neutral-200: 217 33% 20%;
+    --neutral-300: 215 25% 27%;
+    --neutral-400: 215 19% 35%;
+    --neutral-500: 215 16% 47%;
+    --neutral-600: 215 20% 65%;
+    --neutral-700: 213 27% 84%;
+    --neutral-800: 210 40% 96%;
+    --neutral-900: 210 40% 98%;
+
+    --brand-navy: 217 33% 20%;
+
+    /* Deeper shadows on dark surfaces */
+    --shadow-1: 0 1px 2px 0 hsl(0 0% 0% / 0.3), 0 1px 3px 0 hsl(0 0% 0% / 0.4);
+    --shadow-2: 0 2px 4px -1px hsl(0 0% 0% / 0.4), 0 4px 8px -2px hsl(0 0% 0% / 0.5);
+    --shadow-3: 0 8px 16px -4px hsl(0 0% 0% / 0.5), 0 4px 8px -2px hsl(0 0% 0% / 0.4);
+    --shadow-4: 0 16px 32px -8px hsl(0 0% 0% / 0.6), 0 8px 16px -4px hsl(0 0% 0% / 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+
+  /* Sensible default heading rhythm */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-balance;
+  }
+
+  /* Respect users who prefer reduced motion (accessibility / WCAG). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ==========================================================================
+ * TYPOGRAPHY TOKENS (as utility classes)
+ * Fluid scale: mobile-first, expands toward desktop via clamp().
+ * ========================================================================== */
+
+@layer components {
+  .text-display {
+    font-size: clamp(2.25rem, 6vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  .text-h1 {
+    font-size: clamp(1.875rem, 5vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  .text-h2 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+  }
+  .text-h3 {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+  .text-h4 {
+    font-size: clamp(1.125rem, 2vw, 1.25rem);
+    line-height: 1.3;
+    font-weight: 600;
+  }
+  .text-body-lg {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .text-body {
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .text-body-sm {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .text-caption {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .text-overline {
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+}
+
+/* ==========================================================================
+ * LAYOUT SYSTEM + UTILITY CLASSES
+ * ========================================================================== */
+
+@layer components {
+  /* Page container — centred, max 1440px, responsive gutters. */
+  .container-page {
+    @apply mx-auto w-full max-w-screen-content px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Responsive grid: 4 cols (mobile) → 8 (tablet) → 12 (desktop). */
+  .layout-grid {
+    @apply grid grid-cols-4 gap-4 md:grid-cols-8 md:gap-6 lg:grid-cols-12;
+  }
+
+  /* Consistent vertical section rhythm. */
+  .section {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+
+  /* Base card surface. */
+  .card-surface {
+    @apply rounded-lg border border-border bg-card text-card-foreground shadow-elevation-1;
+  }
+
+  /* Accessible focus ring — attach to interactive elements. */
+  .focus-ring {
+    @apply outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  /* Minimum 44×44 touch target (mobile large-tap rule). */
+  .tap-target {
+    @apply inline-flex min-h-11 min-w-11 items-center justify-center;
+  }
+
+  /* Skeleton loader (Design System: never spinners alone). */
+  .skeleton {
+    @apply animate-pulse rounded-md bg-muted;
+  }
+}
+
+@layer utilities {
+  /* Safe-area padding so sticky bottom nav clears the iOS home indicator. */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Safe-area padding for fixed top chrome (notch / dynamic island). */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .h-safe-bottom-nav {
+    height: calc(4rem + env(safe-area-inset-bottom));
+  }
+  /* Native-app momentum scrolling within a scroll container. */
+  .scroll-touch {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  /* Hide scrollbars on swipeable carousels while keeping scroll. */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

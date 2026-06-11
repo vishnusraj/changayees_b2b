@@ -1,0 +1,839 @@
+// ============================================================================
+// CHANGAYEES — Prisma Schema (complete / production)
+// Source: CHANGAYEES_DATABASE_SCHEMA.md + CHANGAYEES_FINAL_TECHNICAL_ARCHITECTURE.md (§4)
+//
+// Design rules (from the schema doc):
+//   • UUID primary keys everywhere.
+//   • Timestamps stored as timestamptz (UTC).
+//   • Soft deletes (deleted_at) on mutable / content entities.
+//   • Append-only history: order_status_history, *_notifications, audit_logs,
+//     analytics_events — never soft-deleted, never edited.
+//   • "Actor" columns (created_by / updated_by / assigned_to / uploaded_by) are
+//     UUIDs referencing users.id; integrity enforced at the service layer to
+//     avoid a combinatorial explosion of back-relations on User. They are indexed.
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+/// Generic active/inactive lifecycle (users, categories, industries).
+enum RecordStatus {
+  ACTIVE
+  INACTIVE
+}
+
+/// Editorial lifecycle for CMS-managed / catalog content.
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+/// Where a lead originated (drives attribution + dedup).
+enum LeadSource {
+  RFQ
+  CONTACT_FORM
+  CATALOG_DOWNLOAD
+  WHATSAPP
+  PRODUCT_INQUIRY
+  BULK_ORDER
+  MANUAL
+}
+
+/// Sales pipeline stage for a lead.
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUOTATION_SENT
+  NEGOTIATION
+  WON
+  LOST
+}
+
+/// RFQ vs. Bulk procurement — same table, different intent (ADR-05).
+enum RfqType {
+  RFQ
+  BULK
+}
+
+/// RFQ review lifecycle.
+enum RfqStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  QUOTATION_SENT
+  APPROVED
+  REJECTED
+  CLOSED
+}
+
+/// The 15-stage production workflow. Order of declaration == workflow order;
+/// progress_percentage and the tracking colour bucket are derived from the
+/// stage index (architecture M-09):
+///   ORDER_CONFIRMED            -> blue   (confirmed)
+///   FABRIC_* / CUTTING_* /
+///   STITCHING_*                -> orange (production)
+///   QUALITY_INSPECTION         -> purple (quality)
+///   PACKING / DISPATCHED       -> teal   (dispatch)
+///   DELIVERED / CLOSED         -> green  (delivered)
+enum OrderStatus {
+  INQUIRY_RECEIVED
+  QUOTATION_SENT
+  QUOTATION_APPROVED
+  ORDER_CONFIRMED
+  FABRIC_ORDERED
+  FABRIC_RECEIVED
+  CUTTING_STARTED
+  CUTTING_COMPLETED
+  STITCHING_STARTED
+  STITCHING_COMPLETED
+  QUALITY_INSPECTION
+  PACKING
+  DISPATCHED
+  DELIVERED
+  CLOSED
+}
+
+/// Delivery lifecycle for a dispatched notification.
+enum NotificationStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+/// Product document classification.
+enum ProductDocumentType {
+  BROCHURE
+  SPEC_SHEET
+  SIZE_CHART
+  CERTIFICATE
+  OTHER
+}
+
+// ============================================================================
+// AUTH / RBAC
+// ============================================================================
+
+model User {
+  id           String       @id @default(uuid()) @db.Uuid
+  name         String
+  email        String       @unique
+  phone        String?
+  passwordHash String       @map("password_hash")
+  status       RecordStatus @default(ACTIVE)
+  lastLogin    DateTime?    @map("last_login") @db.Timestamptz(6)
+
+  roleId String @map("role_id") @db.Uuid
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  sessions            Session[]
+  passwordResetTokens PasswordResetToken[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([roleId])
+  @@index([status])
+  @@map("users")
+}
+
+/// Refresh-token sessions. The raw refresh token is never stored — only its
+/// SHA-256 fingerprint (token_hash). Enables logout, rotation, and revocation.
+model Session {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash")
+  userAgent String?   @map("user_agent")
+  ip        String?
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+/// One-time password-reset tokens (hashed). Consumed on use; expire on TTL.
+model PasswordResetToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  usedAt    DateTime? @map("used_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model Role {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique
+  description String?
+
+  users           User[]
+  rolePermissions RolePermission[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique // "orders.update_status"
+  module      String
+  description String?
+
+  rolePermissions RolePermission[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([module])
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String @map("role_id") @db.Uuid
+  permissionId String @map("permission_id") @db.Uuid
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+// ============================================================================
+// CATALOG
+// ============================================================================
+
+model Category {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String       @unique
+  description String?
+  bannerImage String?      @map("banner_image")
+  sortOrder   Int          @default(0) @map("sort_order")
+  status      RecordStatus @default(ACTIVE)
+
+  subcategories Subcategory[]
+  products      Product[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([status, sortOrder])
+  @@map("categories")
+}
+
+model Subcategory {
+  id          String       @id @default(uuid()) @db.Uuid
+  categoryId  String       @map("category_id") @db.Uuid
+  name        String
+  slug        String       @unique
+  description String?
+  status      RecordStatus @default(ACTIVE)
+
+  category Category  @relation(fields: [categoryId], references: [id])
+  products Product[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([categoryId])
+  @@map("subcategories")
+}
+
+model Product {
+  id               String        @id @default(uuid()) @db.Uuid
+  productCode      String        @unique @map("product_code")
+  name             String
+  slug             String        @unique
+  shortDescription String?       @map("short_description")
+  description      String?
+  categoryId       String        @map("category_id") @db.Uuid
+  subcategoryId    String?       @map("subcategory_id") @db.Uuid
+  fabricType       String?       @map("fabric_type")
+  moq              Int?
+  availableSizes   String[]      @map("available_sizes")
+  availableColors  String[]      @map("available_colors")
+  isFeatured       Boolean       @default(false) @map("is_featured")
+  status           PublishStatus @default(DRAFT)
+  createdBy        String?       @map("created_by") @db.Uuid
+  updatedBy        String?       @map("updated_by") @db.Uuid
+
+  // Full-text search vector. The column is a Postgres GENERATED column defined
+  // in migration 20260610000100_product_search; declared here as Unsupported so
+  // Prisma is aware of it (no drift). Queried via raw SQL in the search service.
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
+  category    Category          @relation(fields: [categoryId], references: [id])
+  subcategory Subcategory?      @relation(fields: [subcategoryId], references: [id])
+  images      ProductImage[]
+  documents   ProductDocument[]
+  orderItems  OrderItem[]
+  rfqItems    RfqItem[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([categoryId, status])
+  @@index([subcategoryId])
+  @@index([isFeatured, status])
+  @@index([searchVector], type: Gin)
+  @@map("products")
+}
+
+model ProductImage {
+  id        String  @id @default(uuid()) @db.Uuid
+  productId String  @map("product_id") @db.Uuid
+  imageUrl  String  @map("image_url")
+  altText   String? @map("alt_text")
+  sortOrder Int     @default(0) @map("sort_order")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([productId, sortOrder])
+  @@map("product_images")
+}
+
+model ProductDocument {
+  id           String              @id @default(uuid()) @db.Uuid
+  productId    String              @map("product_id") @db.Uuid
+  documentType ProductDocumentType @default(OTHER) @map("document_type")
+  title        String?
+  fileUrl      String              @map("file_url")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([productId])
+  @@map("product_documents")
+}
+
+model Industry {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String       @unique
+  description String?
+  bannerImage String?      @map("banner_image")
+  status      RecordStatus @default(ACTIVE)
+
+  leads       Lead[]
+  rfqs        Rfq[]
+  caseStudies CaseStudy[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@map("industries")
+}
+
+// ============================================================================
+// LEAD GENERATION
+// ============================================================================
+
+model Lead {
+  id              String     @id @default(uuid()) @db.Uuid
+  leadNumber      String     @unique @map("lead_number")
+  name            String
+  phone           String // normalized E.164 — dedup key (architecture D-14)
+  email           String?
+  organization    String?
+  designation     String?
+  industryId      String?    @map("industry_id") @db.Uuid
+  source          LeadSource
+  status          LeadStatus @default(NEW)
+  assignedTo      String?    @map("assigned_to") @db.Uuid
+  notes           String?
+  consentWhatsapp Boolean    @default(false) @map("consent_whatsapp")
+
+  industry         Industry?         @relation(fields: [industryId], references: [id])
+  rfqs             Rfq[]
+  contactRequests  ContactRequest[]
+  catalogDownloads CatalogDownload[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@unique([phone, source])
+  @@index([phone])
+  @@index([status])
+  @@index([assignedTo, status])
+  @@index([industryId])
+  @@map("leads")
+}
+
+model ContactRequest {
+  id           String  @id @default(uuid()) @db.Uuid
+  name         String
+  phone        String
+  email        String?
+  organization String?
+  message      String?
+  leadId       String? @map("lead_id") @db.Uuid
+
+  lead Lead? @relation(fields: [leadId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([leadId])
+  @@map("contact_requests")
+}
+
+model Rfq {
+  id               String    @id @default(uuid()) @db.Uuid
+  rfqNumber        String    @unique @map("rfq_number")
+  type             RfqType   @default(RFQ)
+  organization     String
+  contactPerson    String    @map("contact_person")
+  phone            String
+  email            String?
+  location         String?
+  industryId       String?   @map("industry_id") @db.Uuid
+  requirements     String?
+  expectedQuantity Int?      @map("expected_quantity")
+  studentCount     Int?      @map("student_count")
+  staffCount       Int?      @map("staff_count")
+  expectedDelivery DateTime? @map("expected_delivery") @db.Date
+  status           RfqStatus @default(SUBMITTED)
+  assignedTo       String?   @map("assigned_to") @db.Uuid
+  leadId           String?   @map("lead_id") @db.Uuid
+  consentWhatsapp  Boolean   @default(false) @map("consent_whatsapp")
+
+  industry Industry? @relation(fields: [industryId], references: [id])
+  lead     Lead?     @relation(fields: [leadId], references: [id])
+  items    RfqItem[]
+  files    RfqFile[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([assignedTo])
+  @@index([leadId])
+  @@index([type])
+  @@map("rfqs")
+}
+
+model RfqItem {
+  id          String  @id @default(uuid()) @db.Uuid
+  rfqId       String  @map("rfq_id") @db.Uuid
+  productId   String? @map("product_id") @db.Uuid
+  customLabel String? @map("custom_label") // free-text item when not a catalog product
+  quantity    Int?
+  remarks     String?
+
+  rfq     Rfq      @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([rfqId])
+  @@index([productId])
+  @@map("rfq_items")
+}
+
+model RfqFile {
+  id       String  @id @default(uuid()) @db.Uuid
+  rfqId    String  @map("rfq_id") @db.Uuid
+  fileUrl  String  @map("file_url")
+  fileType String? @map("file_type")
+  fileName String? @map("file_name")
+  fileSize Int?    @map("file_size")
+
+  rfq Rfq @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([rfqId])
+  @@map("rfq_files")
+}
+
+// ============================================================================
+// CATALOGS
+// ============================================================================
+
+model Catalog {
+  id          String        @id @default(uuid()) @db.Uuid
+  title       String
+  slug        String        @unique
+  description String?
+  thumbnail   String?
+  fileUrl     String        @map("file_url")
+  category    String?
+  status      PublishStatus @default(PUBLISHED)
+
+  downloads CatalogDownload[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@map("catalogs")
+}
+
+model CatalogDownload {
+  id           String  @id @default(uuid()) @db.Uuid
+  catalogId    String  @map("catalog_id") @db.Uuid
+  name         String
+  phone        String
+  email        String?
+  organization String?
+  leadId       String? @map("lead_id") @db.Uuid
+
+  catalog Catalog @relation(fields: [catalogId], references: [id])
+  lead    Lead?   @relation(fields: [leadId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([catalogId])
+  @@index([leadId])
+  @@map("catalog_downloads")
+}
+
+// ============================================================================
+// ORDER MANAGEMENT
+// ============================================================================
+
+model Order {
+  id                 String      @id @default(uuid()) @db.Uuid
+  orderNumber        String      @unique @map("order_number")
+  trackingId         String      @unique @map("tracking_id") // display-only, e.g. CHG-SCH-2026-00124
+  customerName       String      @map("customer_name")
+  organization       String?
+  phone              String
+  email              String?
+  assignedManager    String?     @map("assigned_manager") @db.Uuid
+  expectedDelivery   DateTime?   @map("expected_delivery") @db.Date
+  currentStatus      OrderStatus @default(INQUIRY_RECEIVED) @map("current_status")
+  progressPercentage Int         @default(0) @map("progress_percentage")
+  consentWhatsapp    Boolean     @default(false) @map("consent_whatsapp")
+  createdBy          String?     @map("created_by") @db.Uuid
+
+  items                 OrderItem[]
+  statusHistory         OrderStatusHistory[]
+  customerNotes         CustomerNote[]
+  trackingLink          TrackingLink?
+  whatsappNotifications WhatsappNotification[]
+  emailNotifications    EmailNotification[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([currentStatus])
+  @@index([assignedManager])
+  @@index([phone])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(uuid()) @db.Uuid
+  orderId   String  @map("order_id") @db.Uuid
+  productId String? @map("product_id") @db.Uuid
+  itemLabel String? @map("item_label") // snapshot label if product is later changed
+  quantity  Int
+  remarks   String?
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+/// Append-only production timeline. Never edited, never deleted.
+model OrderStatusHistory {
+  id           String      @id @default(uuid()) @db.Uuid
+  orderId      String      @map("order_id") @db.Uuid
+  status       OrderStatus
+  customerNote String?     @map("customer_note")
+  internalNote String?     @map("internal_note")
+  updatedBy    String?     @map("updated_by") @db.Uuid
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([orderId, createdAt])
+  @@map("order_status_history")
+}
+
+model CustomerNote {
+  id                String  @id @default(uuid()) @db.Uuid
+  orderId           String  @map("order_id") @db.Uuid
+  message           String
+  visibleToCustomer Boolean @default(true) @map("visible_to_customer")
+  createdBy         String? @map("created_by") @db.Uuid
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([orderId])
+  @@map("customer_notes")
+}
+
+/// Opaque tokenized tracking link — the token is the authorization (ADR-04).
+model TrackingLink {
+  id            String  @id @default(uuid()) @db.Uuid
+  orderId       String  @unique @map("order_id") @db.Uuid
+  trackingToken String  @unique @map("tracking_token")
+  isActive      Boolean @default(true) @map("is_active")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([trackingToken])
+  @@map("tracking_links")
+}
+
+// ============================================================================
+// NOTIFICATIONS (append-only logs)
+// ============================================================================
+
+model WhatsappNotification {
+  id             String             @id @default(uuid()) @db.Uuid
+  orderId        String?            @map("order_id") @db.Uuid
+  phone          String
+  templateName   String             @map("template_name")
+  message        String?
+  status         NotificationStatus @default(QUEUED)
+  idempotencyKey String?            @unique @map("idempotency_key") // dedup retries (M-20)
+  providerId     String?            @map("provider_id") // Meta message id
+  errorMessage   String?            @map("error_message")
+  retryCount     Int                @default(0) @map("retry_count")
+  sentAt         DateTime?          @map("sent_at") @db.Timestamptz(6)
+
+  order Order? @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([orderId])
+  @@map("whatsapp_notifications")
+}
+
+model EmailNotification {
+  id           String             @id @default(uuid()) @db.Uuid
+  orderId      String?            @map("order_id") @db.Uuid
+  email        String
+  subject      String
+  status       NotificationStatus @default(QUEUED)
+  errorMessage String?            @map("error_message")
+  sentAt       DateTime?          @map("sent_at") @db.Timestamptz(6)
+
+  order Order? @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([orderId])
+  @@map("email_notifications")
+}
+
+// ============================================================================
+// CONTENT MANAGEMENT
+// ============================================================================
+
+model Blog {
+  id             String        @id @default(uuid()) @db.Uuid
+  title          String
+  slug           String        @unique
+  excerpt        String?
+  content        String?
+  featuredImage  String?       @map("featured_image")
+  seoTitle       String?       @map("seo_title")
+  seoDescription String?       @map("seo_description")
+  status         PublishStatus @default(DRAFT)
+  publishedAt    DateTime?     @map("published_at") @db.Timestamptz(6)
+  createdBy      String?       @map("created_by") @db.Uuid
+  updatedBy      String?       @map("updated_by") @db.Uuid
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([status, publishedAt])
+  @@map("blogs")
+}
+
+model CaseStudy {
+  id            String        @id @default(uuid()) @db.Uuid
+  title         String
+  slug          String        @unique
+  industryId    String?       @map("industry_id") @db.Uuid
+  clientName    String?       @map("client_name")
+  location      String?
+  challenge     String?
+  solution      String?
+  results       String?
+  featuredImage String?       @map("featured_image")
+  status        PublishStatus @default(DRAFT)
+
+  industry Industry? @relation(fields: [industryId], references: [id])
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([industryId])
+  @@map("case_studies")
+}
+
+model Testimonial {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String
+  organization String?
+  designation  String?
+  testimonial  String
+  photo        String?
+  status       PublishStatus @default(PUBLISHED)
+  sortOrder    Int           @default(0) @map("sort_order")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([status, sortOrder])
+  @@map("testimonials")
+}
+
+model Page {
+  id             String        @id @default(uuid()) @db.Uuid
+  title          String
+  slug           String        @unique
+  content        String? // structured JSON (page-builder sections) or rich text
+  seoTitle       String?       @map("seo_title")
+  seoDescription String?       @map("seo_description")
+  status         PublishStatus @default(DRAFT)
+  updatedBy      String?       @map("updated_by") @db.Uuid
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@map("pages")
+}
+
+model Media {
+  id         String  @id @default(uuid()) @db.Uuid
+  fileName   String  @map("file_name")
+  fileUrl    String  @map("file_url")
+  fileType   String  @map("file_type")
+  fileSize   Int?    @map("file_size")
+  folder     String? @default("/")
+  uploadedBy String? @map("uploaded_by") @db.Uuid
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([fileType])
+  @@index([folder])
+  @@map("media")
+}
+
+// ============================================================================
+// SETTINGS
+// ============================================================================
+
+model Setting {
+  id           String  @id @default(uuid()) @db.Uuid
+  settingKey   String  @unique @map("setting_key")
+  settingValue String? @map("setting_value")
+
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("settings")
+}
+
+model SeoSetting {
+  id              String  @id @default(uuid()) @db.Uuid
+  pageType        String  @map("page_type") // "product" | "blog" | "home" ...
+  pageId          String? @map("page_id") @db.Uuid // null == global default for the type
+  metaTitle       String? @map("meta_title")
+  metaDescription String? @map("meta_description")
+  ogImage         String? @map("og_image")
+  canonicalUrl    String? @map("canonical_url")
+
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([pageType, pageId])
+  @@map("seo_settings")
+}
+
+// ============================================================================
+// AUDIT & ANALYTICS (append-only)
+// ============================================================================
+
+model AuditLog {
+  id       String  @id @default(uuid()) @db.Uuid
+  userId   String? @map("user_id") @db.Uuid
+  module   String
+  action   String
+  entityId String? @map("entity_id") @db.Uuid
+  oldValue Json?   @map("old_value")
+  newValue Json?   @map("new_value")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([module])
+  @@index([entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model AnalyticsEvent {
+  id             String  @id @default(uuid()) @db.Uuid
+  eventName      String  @map("event_name")
+  eventType      String? @map("event_type")
+  userIdentifier String? @map("user_identifier") // anonymous cookie / device id
+  metadata       Json?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([eventName])
+  @@index([createdAt])
+  @@map("analytics_events")
+}

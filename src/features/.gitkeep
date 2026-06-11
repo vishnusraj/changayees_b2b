@@ -1,0 +1,2 @@
+# Feature modules (domain logic) live here — products/, rfq/, leads/, orders/,
+# tracking/, cms/. Added per build phase. See architecture §1.2.
