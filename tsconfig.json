@@ -29,5 +29,11 @@
     ".next/types/**/*.ts",
     "prisma/seed.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "tests",
+    "vitest.config.mts",
+    "vitest.setup.ts",
+    "playwright.config.ts"
+  ]
 }
