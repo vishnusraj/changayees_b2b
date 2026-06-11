@@ -5,6 +5,7 @@ import { EmptyState } from '@/components/feedback/empty-state';
 import { listPublishedBlogs } from '@/features/cms/blog.service';
 import { formatDate } from '@/lib/format';
 import { buildMetadata } from '@/lib/seo';
+import { safe } from '@/lib/safe-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +16,7 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function BlogPage() {
-  const posts = await listPublishedBlogs();
+  const posts = await safe(listPublishedBlogs(), [], 'listPublishedBlogs');
 
   return (
     <Container className="py-6 md:py-10">

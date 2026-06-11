@@ -8,6 +8,7 @@ import {
   getIndustryRecommendedProducts,
   getIndustryCaseStudies,
 } from '@/features/industries/industry.service';
+import { safe } from '@/lib/safe-data';
 
 export const revalidate = 3600;
 
@@ -19,7 +20,7 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const industry = await getIndustryBySlug(slug);
+  const industry = await safe(getIndustryBySlug(slug), null, 'getIndustryBySlug');
   if (!industry) return { title: 'Industry not found' };
 
   const description = industry.description ?? getIndustryContent(slug).intro;
@@ -38,13 +39,13 @@ export default async function IndustryDetailPage({
   params: Params;
 }) {
   const { slug } = await params;
-  const industry = await getIndustryBySlug(slug);
+  const industry = await safe(getIndustryBySlug(slug), null, 'getIndustryBySlug');
   if (!industry) notFound();
 
   const content = getIndustryContent(slug);
   const [recommendedProducts, caseStudies] = await Promise.all([
-    getIndustryRecommendedProducts(slug),
-    getIndustryCaseStudies(industry.id),
+    safe(getIndustryRecommendedProducts(slug), [], 'getIndustryRecommendedProducts'),
+    safe(getIndustryCaseStudies(industry.id), [], 'getIndustryCaseStudies'),
   ]);
 
   return (

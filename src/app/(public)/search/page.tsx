@@ -7,6 +7,7 @@ import { ProductGrid } from '@/components/product/product-grid';
 import { EmptyState } from '@/components/feedback/empty-state';
 import { searchProducts } from '@/features/products/product.service';
 import { firstParam, intParam } from '@/lib/search-params';
+import { safe } from '@/lib/safe-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,9 +27,10 @@ export default async function SearchPage({
   const q = firstParam(sp.q)?.trim() ?? '';
   const page = intParam(sp.page, 1);
 
+  const emptyResult = { products: [], total: 0, page: 1, limit: 24, totalPages: 1 };
   const result = q
-    ? await searchProducts(q, { page, limit: 24 })
-    : { products: [], total: 0, page: 1, limit: 24, totalPages: 1 };
+    ? await safe(searchProducts(q, { page, limit: 24 }), emptyResult, 'searchProducts')
+    : emptyResult;
 
   return (
     <Container className="py-6 md:py-10">

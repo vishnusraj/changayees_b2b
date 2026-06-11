@@ -5,6 +5,7 @@ import { EmptyState } from '@/components/feedback/empty-state';
 import { listIndustries } from '@/features/industries/industry.service';
 import { getIndustryIcon } from '@/lib/industry-content';
 import { buildMetadata } from '@/lib/seo';
+import { safe } from '@/lib/safe-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,7 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function IndustriesPage() {
-  const industries = await listIndustries();
+  const industries = await safe(listIndustries(), [], 'listIndustries');
 
   return (
     <Container className="py-6 md:py-10">

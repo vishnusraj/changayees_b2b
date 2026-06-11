@@ -14,6 +14,7 @@ import {
 } from '@/features/products/product.service';
 import { firstParam, listParam, intParam } from '@/lib/search-params';
 import { buildMetadata } from '@/lib/seo';
+import { safe } from '@/lib/safe-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,9 +41,13 @@ export default async function ProductsPage({
   const activeCount = subcategories.length + fabrics.length + colors.length;
 
   const [categories, facets, result] = await Promise.all([
-    listCategories(),
-    getFilterFacets(category),
-    listProducts({ page, category, subcategories, fabrics, colors, sort }),
+    safe(listCategories(), [], 'listCategories'),
+    safe(getFilterFacets(category), { subcategories: [], fabrics: [], colors: [] }, 'getFilterFacets'),
+    safe(
+      listProducts({ page, category, subcategories, fabrics, colors, sort }),
+      { products: [], total: 0, page, limit: 24, totalPages: 1 },
+      'listProducts',
+    ),
   ]);
 
   const clearHref = category ? `/products?category=${category}` : '/products';

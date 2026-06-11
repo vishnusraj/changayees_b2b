@@ -4,6 +4,7 @@ import { RfqWizard } from '@/components/rfq/rfq-wizard';
 import { listCategories, getProductBySlug } from '@/features/products/product.service';
 import { firstParam } from '@/lib/search-params';
 import { buildMetadata } from '@/lib/seo';
+import { safe } from '@/lib/safe-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,10 +25,10 @@ export default async function RfqPage({
   const sp = await searchParams;
   const productSlug = firstParam(sp.product);
 
-  const categories = await listCategories();
+  const categories = await safe(listCategories(), [], 'listCategories');
   let prefillProduct: string | undefined;
   if (productSlug) {
-    const product = await getProductBySlug(productSlug);
+    const product = await safe(getProductBySlug(productSlug), null, 'getProductBySlug');
     prefillProduct = product?.name ?? productSlug;
   }
 

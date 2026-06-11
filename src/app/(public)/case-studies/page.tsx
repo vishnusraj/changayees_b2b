@@ -4,6 +4,7 @@ import { CaseStudyCard } from '@/components/marketing/case-study-card';
 import { EmptyState } from '@/components/feedback/empty-state';
 import { listPublishedCaseStudies } from '@/features/cms/case-study.service';
 import { buildMetadata } from '@/lib/seo';
+import { safe } from '@/lib/safe-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,7 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function CaseStudiesPage() {
-  const rows = await listPublishedCaseStudies();
+  const rows = await safe(listPublishedCaseStudies(), [], 'listPublishedCaseStudies');
 
   return (
     <Container className="py-6 md:py-10">

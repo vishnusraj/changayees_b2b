@@ -5,6 +5,7 @@ import { getPublishedBlog } from '@/features/cms/blog.service';
 import { formatDate } from '@/lib/format';
 import { JsonLd } from '@/components/seo/json-ld';
 import { buildMetadata, articleSchema } from '@/lib/seo';
+import { safe } from '@/lib/safe-data';
 
 export const revalidate = 3600;
 
@@ -12,7 +13,7 @@ type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPublishedBlog(slug);
+  const post = await safe(getPublishedBlog(slug), null, 'getPublishedBlog');
   if (!post) return { title: 'Post not found' };
   return buildMetadata({
     title: post.seoTitle || post.title,
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function BlogPostPage({ params }: { params: Params }) {
   const { slug } = await params;
-  const post = await getPublishedBlog(slug);
+  const post = await safe(getPublishedBlog(slug), null, 'getPublishedBlog');
   if (!post) notFound();
 
   return (

@@ -20,6 +20,7 @@ import {
   getProductBySlug,
   getRelatedProducts,
 } from '@/features/products/product.service';
+import { safe } from '@/lib/safe-data';
 
 export const revalidate = 3600;
 
@@ -38,7 +39,7 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const product = await safe(getProductBySlug(slug), null, 'getProductBySlug');
   if (!product) return { title: 'Product not found' };
 
   const description =
@@ -58,10 +59,14 @@ export default async function ProductDetailPage({
   params: Params;
 }) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const product = await safe(getProductBySlug(slug), null, 'getProductBySlug');
   if (!product) notFound();
 
-  const related = await getRelatedProducts(product.categoryId, product.id);
+  const related = await safe(
+    getRelatedProducts(product.categoryId, product.id),
+    [],
+    'getRelatedProducts',
+  );
 
   // Build specification groups
   const detailItems: ProductSpec[] = [

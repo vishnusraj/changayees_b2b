@@ -10,6 +10,7 @@ import {
 import { firstParam } from '@/lib/search-params';
 import { cn } from '@/lib/utils';
 import { buildMetadata } from '@/lib/seo';
+import { safe } from '@/lib/safe-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,8 +41,8 @@ export default async function CatalogsPage({
   const category = firstParam(sp.category);
 
   const [catalogs, categories] = await Promise.all([
-    listCatalogs({ search: q, category }),
-    listCatalogCategories(),
+    safe(listCatalogs({ search: q, category }), [], 'listCatalogs'),
+    safe(listCatalogCategories(), [], 'listCatalogCategories'),
   ]);
 
   return (

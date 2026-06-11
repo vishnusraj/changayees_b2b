@@ -6,6 +6,7 @@ import { ContactCta } from '@/components/home/cta-bands';
 import { getPublishedCaseStudy } from '@/features/cms/case-study.service';
 import { JsonLd } from '@/components/seo/json-ld';
 import { buildMetadata, articleSchema } from '@/lib/seo';
+import { safe } from '@/lib/safe-data';
 
 export const revalidate = 3600;
 
@@ -13,7 +14,7 @@ type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
-  const cs = await getPublishedCaseStudy(slug);
+  const cs = await safe(getPublishedCaseStudy(slug), null, 'getPublishedCaseStudy');
   if (!cs) return { title: 'Case study not found' };
   return buildMetadata({
     title: cs.title,
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function CaseStudyPage({ params }: { params: Params }) {
   const { slug } = await params;
-  const cs = await getPublishedCaseStudy(slug);
+  const cs = await safe(getPublishedCaseStudy(slug), null, 'getPublishedCaseStudy');
   if (!cs) notFound();
 
   const sections = [
