@@ -831,7 +831,7 @@ async function seedLeads(salesManagerId?: string): Promise<string[]> {
         leadNumber: `LEAD-${ts}-${100 + i}`,
         name: l.name,
         phone: `+9198${pad(7600 + i)}${pad(2300 + i)}`.slice(0, 13),
-        email: `${l.name.split(' ')[0].toLowerCase()}@${l.org.toLowerCase().replace(/[^a-z]+/g, '')}.example.com`,
+        email: `${(l.name.split(' ')[0] ?? l.name).toLowerCase()}@${l.org.toLowerCase().replace(/[^a-z]+/g, '')}.example.com`,
         organization: l.org,
         designation: 'Procurement Lead',
         industryId: indBySlug.get(l.industry) ?? null,
@@ -868,7 +868,7 @@ async function seedContactRequests(leadIds: string[]) {
       data: {
         name: c.name,
         phone: `+9197${pad(1200 + i)}${pad(8800 + i)}`.slice(0, 13),
-        email: `${c.name.split(' ')[0].toLowerCase()}@example.com`,
+        email: `${(c.name.split(' ')[0] ?? 'contact').toLowerCase()}@example.com`,
         organization: c.org,
         message: c.message,
         leadId: i < leadIds.length ? leadIds[i + 2] ?? null : null,
@@ -1208,7 +1208,7 @@ async function seedAnalytics() {
   for (let day = 0; day < 14; day += 1) {
     const count = 8 + Math.floor(Math.random() * 12);
     for (let k = 0; k < count; k += 1) {
-      const name = names[Math.floor(Math.random() * names.length)];
+      const name = names[Math.floor(Math.random() * names.length)] ?? 'product_viewed';
       rows.push({
         eventName: name,
         eventType: name.includes('view') ? 'view' : 'conversion',
