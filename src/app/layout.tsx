@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { SITE } from '@/lib/constants';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo';
+import { ConstructionBanner } from '@/components/layout/construction-banner';
 import './globals.css';
 
 const inter = Inter({
@@ -53,7 +54,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body className="min-h-dvh">{children}</body>
+      <body className="min-h-dvh">
+        <ConstructionBanner />
+        {children}
+      </body>
     </html>
   );
 }

@@ -11,17 +11,22 @@ import { brandAsset } from '@/lib/design-tokens';
  * Per CHANGAYEES_FINAL_TECHNICAL_ARCHITECTURE.md (R-01 / M-02) this must be
  * replaced with an SVG kit (+ mono / reversed / favicon variants) before launch.
  */
+/** Intrinsic aspect ratio of /logo/images.png (1536 × 611). */
+const LOGO_ASPECT = 1536 / 611;
+
 export function Logo({
   className,
-  width = 160,
-  height = 48,
+  height = 40,
   priority = false,
 }: {
   className?: string;
-  width?: number;
   height?: number;
   priority?: boolean;
 }) {
+  // Width is derived from the requested height so the box matches the asset's
+  // real aspect ratio (prevents layout shift). The image is then constrained
+  // to `height`, with width auto-scaling, and never overflows its container.
+  const width = Math.round(height * LOGO_ASPECT);
   return (
     <Link
       href="/"
@@ -34,7 +39,8 @@ export function Logo({
         width={width}
         height={height}
         priority={priority}
-        className="h-auto w-auto object-contain"
+        style={{ height, width: 'auto' }}
+        className="block max-w-full object-contain"
       />
     </Link>
   );

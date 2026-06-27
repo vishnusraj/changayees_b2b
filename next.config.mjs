@@ -48,7 +48,7 @@ const nextConfig = {
       { protocol: 'https', hostname: '**.r2.dev' },
       { protocol: 'https', hostname: '**.r2.cloudflarestorage.com' },
       // Demo/seed placeholder images — safe to remove with the demo data.
-      { protocol: 'https', hostname: 'picsum.photos' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
       ...(process.env.MEDIA_PUBLIC_BASE_URL
         ? [
             {

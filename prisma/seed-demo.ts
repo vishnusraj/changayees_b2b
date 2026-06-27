@@ -51,8 +51,64 @@ const SUPER_ADMIN_EMAIL =
 // ---------------------------------------------------------------------------
 
 const YEAR = new Date().getFullYear();
-const img = (key: string, w = 800, h = 800) =>
-  `https://picsum.photos/seed/chg-${key}/${w}/${h}`;
+
+// Topical, license-free imagery from the Unsplash CDN (verified URLs). Grouped
+// so each product/blog/case study gets a contextually appropriate photo rather
+// than a random one.
+const unsplash = (id: string, w = 800, h = 800) =>
+  `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&q=70&auto=format&fit=crop`;
+
+const CATEGORY_IMAGES: Record<string, string[]> = {
+  'school-uniforms': ['1577896851231-70ef18881754', '1503676260728-1c00da094a0b'],
+  'college-uniforms': ['1503676260728-1c00da094a0b', '1490481651871-ab68de25d43d'],
+  'uniform-sarees': ['1610652492500-ded49ceeb378', '1556157382-97eda2d62296'],
+  'corporate-uniforms': ['1620799140408-edc6dcb6d633', '1564859228273-274232fdb516'],
+  'sports-uniforms': [
+    '1517649763962-0c623066013b',
+    '1551232864-3f0890e580d9',
+    '1571019613454-1cb2f99b2d8b',
+  ],
+  'lab-coats': ['1581655353564-df123a1eb820', '1576566588028-4147f3842f27'],
+  accessories: ['1485230895905-ec40ba36b9bc', '1521572163474-6864f9cf17ab'],
+};
+const APPAREL = [
+  '1521572163474-6864f9cf17ab',
+  '1523381210434-271e8be1f52b',
+  '1556905055-8f358a7a47b2',
+  '1490481651871-ab68de25d43d',
+];
+const PORTRAITS = [
+  '1500648767791-00dcc994a43e',
+  '1494790108377-be9c29b29330',
+  '1472099645785-5658abf4ff4e',
+  '1438761681033-6461ffad8d80',
+  '1507003211169-0a1dd7228f2d',
+  '1544005313-94ddf0286df2',
+];
+const BLOG_IMAGES = [
+  '1581291518857-4e27b48ff24e',
+  '1556157382-97eda2d62296',
+  '1620799140408-edc6dcb6d633',
+  '1503676260728-1c00da094a0b',
+  '1523381210434-271e8be1f52b',
+];
+const CATALOG_IMAGES: Record<string, string> = {
+  School: '1577896851231-70ef18881754',
+  Corporate: '1620799140408-edc6dcb6d633',
+  Healthcare: '1581655353564-df123a1eb820',
+  Sports: '1517649763962-0c623066013b',
+  General: '1523381210434-271e8be1f52b',
+};
+const CASE_IMAGES: Record<string, string> = {
+  schools: '1577896851231-70ef18881754',
+  hospitals: '1581655353564-df123a1eb820',
+  hotels: '1620799140408-edc6dcb6d633',
+  industrial: '1581291518857-4e27b48ff24e',
+};
+
+const pick = <T,>(arr: T[], i: number): T => arr[i % arr.length] as T;
+const productImage = (categorySlug: string, i: number) =>
+  unsplash(pick(CATEGORY_IMAGES[categorySlug] ?? APPAREL, i));
 const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000);
 const hoursAgo = (n: number) => new Date(Date.now() - n * 60 * 60 * 1000);
 const pad = (n: number) => n.toString().padStart(4, '0');
@@ -503,8 +559,8 @@ async function seedProducts(adminId: string): Promise<string[]> {
         updatedBy: adminId,
         images: {
           create: [
-            { imageUrl: img(`${p.slug}-1`), altText: `${p.name} — front`, sortOrder: 0 },
-            { imageUrl: img(`${p.slug}-2`), altText: `${p.name} — detail`, sortOrder: 1 },
+            { imageUrl: productImage(p.category, i), altText: `${p.name} — front`, sortOrder: 0 },
+            { imageUrl: productImage(p.category, i + 1), altText: `${p.name} — detail`, sortOrder: 1 },
           ],
         },
         documents: {
@@ -512,7 +568,7 @@ async function seedProducts(adminId: string): Promise<string[]> {
             {
               documentType: ProductDocumentType.SIZE_CHART,
               title: `${p.name} — Size Chart`,
-              fileUrl: `https://picsum.photos/seed/chg-${p.slug}-doc/600/800`,
+              fileUrl: unsplash('1556157382-97eda2d62296', 600, 800),
             },
           ],
         },
@@ -575,8 +631,8 @@ async function seedCatalogs() {
         slug: c.slug,
         description: c.description,
         category: c.category,
-        thumbnail: img(`cat-${c.slug}`, 600, 800),
-        fileUrl: `https://picsum.photos/seed/chg-cat-${c.slug}-pdf/600/800`,
+        thumbnail: unsplash(CATALOG_IMAGES[c.category] ?? CATALOG_IMAGES.General!, 600, 800),
+        fileUrl: unsplash(CATALOG_IMAGES[c.category] ?? CATALOG_IMAGES.General!, 800, 1100),
         status: PublishStatus.PUBLISHED,
       },
     });
@@ -642,7 +698,7 @@ async function seedBlogs(adminId: string) {
         slug: b.slug,
         excerpt: b.excerpt,
         content: blogBody(b.title),
-        featuredImage: img(`blog-${b.slug}`, 1200, 630),
+        featuredImage: unsplash(pick(BLOG_IMAGES, BLOGS.indexOf(b)), 1200, 630),
         seoTitle: `${b.title} — Changayees Blog`,
         seoDescription: b.excerpt,
         status: b.status,
@@ -730,7 +786,7 @@ async function seedCaseStudies() {
         challenge: c.challenge,
         solution: c.solution,
         results: c.results,
-        featuredImage: img(`case-${c.slug}`, 1200, 630),
+        featuredImage: unsplash(CASE_IMAGES[c.industry] ?? '1523381210434-271e8be1f52b', 1200, 630),
         status: PublishStatus.PUBLISHED,
       },
     });
@@ -789,7 +845,7 @@ async function seedTestimonials() {
         organization: t.organization,
         designation: t.designation,
         testimonial: t.testimonial,
-        photo: img(`person-${i}`, 200, 200),
+        photo: unsplash(pick(PORTRAITS, i), 200, 200),
         status: PublishStatus.PUBLISHED,
         sortOrder: i,
       },
@@ -1018,7 +1074,7 @@ async function seedRfqs(productIds: string[], salesManagerId?: string) {
           ? {
               create: [
                 {
-                  fileUrl: `https://picsum.photos/seed/chg-rfq-${i}/600/800`,
+                  fileUrl: unsplash('1521572163474-6864f9cf17ab', 600, 800),
                   fileName: 'requirement-sheet.pdf',
                   fileType: 'application/pdf',
                   fileSize: 248_000,
@@ -1178,7 +1234,7 @@ async function seedMedia(adminId: string) {
     await prisma.media.create({
       data: {
         fileName: f,
-        fileUrl: img(`media-${i}`, 1200, 800),
+        fileUrl: unsplash(pick(APPAREL, i), 1200, 800),
         fileType: 'image/jpeg',
         fileSize: 180_000 + i * 12_000,
         folder: '/demo',
