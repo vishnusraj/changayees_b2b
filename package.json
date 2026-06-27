@@ -4,9 +4,9 @@
   "private": true,
   "description": "Changayees — mobile-first B2B uniform procurement platform",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "NODE_EXTRA_CA_CERTS=./certs/zscaler-root.pem next dev",
+    "build": "NODE_EXTRA_CA_CERTS=./certs/zscaler-root.pem next build",
+    "start": "NODE_EXTRA_CA_CERTS=./certs/zscaler-root.pem next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,css}\"",
@@ -15,7 +15,9 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "NODE_EXTRA_CA_CERTS=./certs/zscaler-root.pem tsx prisma/seed.ts",
+    "db:seed:demo": "NODE_EXTRA_CA_CERTS=./certs/zscaler-root.pem tsx prisma/seed-demo.ts",
+    "db:seed:demo:clear": "NODE_EXTRA_CA_CERTS=./certs/zscaler-root.pem tsx prisma/seed-demo.ts --clear",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -29,6 +31,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1066.0",
     "@aws-sdk/s3-request-presigner": "^3.1066.0",
+    "@neondatabase/serverless": "^1.1.0",
+    "@prisma/adapter-neon": "^6.19.3",
     "@prisma/client": "^6.2.1",
     "@radix-ui/react-slot": "^1.1.1",
     "bcryptjs": "^2.4.3",
@@ -42,6 +46,7 @@
     "react-dom": "^19.0.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "ws": "^8.21.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -53,6 +58,7 @@
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.4",
     "@types/react-dom": "^19.0.2",
+    "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^4.7.0",
     "@vitest/coverage-v8": "^2.1.9",
     "autoprefixer": "^10.4.20",

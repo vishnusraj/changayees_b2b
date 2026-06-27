@@ -33,12 +33,22 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The Neon serverless driver talks to Postgres over a WebSocket (via `ws`).
+  // Bundling `ws` and its native helpers breaks frame masking
+  // ("bufferUtil.mask is not a function"), so keep them as plain Node requires.
+  serverExternalPackages: [
+    '@prisma/adapter-neon',
+    '@neondatabase/serverless',
+    'ws',
+  ],
   images: {
     formats: ['image/avif', 'image/webp'],
     // Allow images served from the media store (Cloudflare R2) + its CDN.
     remotePatterns: [
       { protocol: 'https', hostname: '**.r2.dev' },
       { protocol: 'https', hostname: '**.r2.cloudflarestorage.com' },
+      // Demo/seed placeholder images — safe to remove with the demo data.
+      { protocol: 'https', hostname: 'picsum.photos' },
       ...(process.env.MEDIA_PUBLIC_BASE_URL
         ? [
             {
