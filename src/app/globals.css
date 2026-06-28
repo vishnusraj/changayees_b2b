@@ -15,120 +15,120 @@
   :root {
     /* ---- Surfaces & text (shadcn-compatible) ---- */
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --foreground: 0 0% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 9%;
 
-    /* ---- Primary = Changayees logo blue ---- */
-    --primary: 202 80% 44%;
-    --primary-foreground: 0 0% 100%;
+    /* ---- Primary = near-black (modern monochrome) ---- */
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
 
-    /* ---- Secondary = dark navy (headers, footer) ---- */
-    --secondary: 222 47% 16%;
-    --secondary-foreground: 0 0% 100%;
+    /* ---- Secondary = soft black (headers, footer) ---- */
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 42%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 16%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 0 0% 94%;
+    --accent-foreground: 0 0% 12%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 0% 16%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 202 80% 44%;
+    --border: 0 0% 90%;
+    --input: 0 0% 89%;
+    --ring: 0 0% 9%;
 
-    /* ---- Neutral scale (50 → 900) ---- */
-    --neutral-50: 210 40% 98%;
-    --neutral-100: 210 40% 96%;
-    --neutral-200: 214 32% 91%;
-    --neutral-300: 213 27% 84%;
-    --neutral-400: 215 20% 65%;
-    --neutral-500: 215 16% 47%;
-    --neutral-600: 215 19% 35%;
-    --neutral-700: 215 25% 27%;
-    --neutral-800: 217 33% 17%;
-    --neutral-900: 222 47% 11%;
+    /* ---- Neutral scale (50 → 900), pure grayscale ---- */
+    --neutral-50: 0 0% 98%;
+    --neutral-100: 0 0% 96%;
+    --neutral-200: 0 0% 90%;
+    --neutral-300: 0 0% 83%;
+    --neutral-400: 0 0% 64%;
+    --neutral-500: 0 0% 45%;
+    --neutral-600: 0 0% 35%;
+    --neutral-700: 0 0% 25%;
+    --neutral-800: 0 0% 15%;
+    --neutral-900: 0 0% 9%;
 
-    /* ---- Brand palette ---- */
-    --brand-blue: 202 80% 44%;
-    --brand-teal: 168 76% 40%;
-    --brand-magenta: 330 78% 58%;
-    --brand-navy: 222 47% 16%;
+    /* ---- Brand palette (neutralised to grayscale) ---- */
+    --brand-blue: 0 0% 9%;
+    --brand-teal: 0 0% 35%;
+    --brand-magenta: 0 0% 22%;
+    --brand-navy: 0 0% 12%;
 
-    /* ---- WhatsApp ---- */
-    --whatsapp: 142 70% 45%;
-    --whatsapp-foreground: 0 0% 100%;
+    /* ---- WhatsApp (monochrome) ---- */
+    --whatsapp: 0 0% 9%;
+    --whatsapp-foreground: 0 0% 98%;
 
-    /* ---- Semantic ---- */
-    --success: 142 65% 40%;
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 222 47% 11%;
-    --danger: 0 72% 51%;
-    --danger-foreground: 0 0% 100%;
-    --info: 202 80% 44%;
-    --info-foreground: 0 0% 100%;
+    /* ---- Semantic (grayscale) ---- */
+    --success: 0 0% 25%;
+    --success-foreground: 0 0% 98%;
+    --warning: 0 0% 13%;
+    --warning-foreground: 0 0% 98%;
+    --danger: 0 0% 16%;
+    --danger-foreground: 0 0% 98%;
+    --info: 0 0% 30%;
+    --info-foreground: 0 0% 98%;
 
-    /* ---- Order-tracking status hues ---- */
-    --status-confirmed: 202 80% 44%; /* blue */
-    --status-production: 28 90% 52%; /* orange */
-    --status-quality: 270 60% 56%; /* purple */
-    --status-dispatch: 178 70% 40%; /* teal */
-    --status-delivered: 142 65% 40%; /* green */
+    /* ---- Order-tracking status (lightness steps, not hues) ---- */
+    --status-confirmed: 0 0% 55%;
+    --status-production: 0 0% 42%;
+    --status-quality: 0 0% 32%;
+    --status-dispatch: 0 0% 22%;
+    --status-delivered: 0 0% 9%;
 
-    /* ---- Radius (Design System: S / M / L / XL / 2XL) ---- */
-    --radius: 0.75rem;
+    /* ---- Radius — tightened for a sharp, editorial monochrome look ---- */
+    --radius: 0.375rem;
 
     /* ---- Elevation (subtle, no heavy shadows) ---- */
-    --shadow-1: 0 1px 2px 0 hsl(222 47% 11% / 0.04), 0 1px 3px 0 hsl(222 47% 11% / 0.06);
-    --shadow-2: 0 2px 4px -1px hsl(222 47% 11% / 0.06), 0 4px 8px -2px hsl(222 47% 11% / 0.08);
-    --shadow-3: 0 8px 16px -4px hsl(222 47% 11% / 0.08), 0 4px 8px -2px hsl(222 47% 11% / 0.06);
-    --shadow-4: 0 16px 32px -8px hsl(222 47% 11% / 0.12), 0 8px 16px -4px hsl(222 47% 11% / 0.08);
+    --shadow-1: 0 1px 2px 0 hsl(0 0% 0% / 0.04), 0 1px 3px 0 hsl(0 0% 0% / 0.06);
+    --shadow-2: 0 2px 4px -1px hsl(0 0% 0% / 0.06), 0 4px 8px -2px hsl(0 0% 0% / 0.08);
+    --shadow-3: 0 8px 16px -4px hsl(0 0% 0% / 0.08), 0 4px 8px -2px hsl(0 0% 0% / 0.06);
+    --shadow-4: 0 16px 32px -8px hsl(0 0% 0% / 0.12), 0 8px 16px -4px hsl(0 0% 0% / 0.08);
   }
 
   .dark {
-    --background: 222 47% 9%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 12%;
-    --popover-foreground: 210 40% 98%;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 202 80% 52%;
-    --primary-foreground: 222 47% 9%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
 
-    --secondary: 217 33% 20%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217 33% 18%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 217 33% 20%;
-    --accent-foreground: 210 40% 98%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 0 0% 18%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 63% 45%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 0% 80%;
+    --destructive-foreground: 0 0% 9%;
 
-    --border: 217 33% 22%;
-    --input: 217 33% 22%;
-    --ring: 202 80% 52%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 83%;
 
     /* Neutral scale inverts for dark surfaces */
-    --neutral-50: 222 47% 11%;
-    --neutral-100: 217 33% 15%;
-    --neutral-200: 217 33% 20%;
-    --neutral-300: 215 25% 27%;
-    --neutral-400: 215 19% 35%;
-    --neutral-500: 215 16% 47%;
-    --neutral-600: 215 20% 65%;
-    --neutral-700: 213 27% 84%;
-    --neutral-800: 210 40% 96%;
-    --neutral-900: 210 40% 98%;
+    --neutral-50: 0 0% 11%;
+    --neutral-100: 0 0% 15%;
+    --neutral-200: 0 0% 20%;
+    --neutral-300: 0 0% 27%;
+    --neutral-400: 0 0% 35%;
+    --neutral-500: 0 0% 47%;
+    --neutral-600: 0 0% 65%;
+    --neutral-700: 0 0% 84%;
+    --neutral-800: 0 0% 96%;
+    --neutral-900: 0 0% 98%;
 
-    --brand-navy: 217 33% 20%;
+    --brand-navy: 0 0% 16%;
 
     /* Deeper shadows on dark surfaces */
     --shadow-1: 0 1px 2px 0 hsl(0 0% 0% / 0.3), 0 1px 3px 0 hsl(0 0% 0% / 0.4);

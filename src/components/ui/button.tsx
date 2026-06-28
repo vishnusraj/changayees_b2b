@@ -5,22 +5,25 @@ import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'focus-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50',
+  'focus-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-semibold transition-all duration-150 ease-out active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground hover:opacity-90',
-        secondary: 'bg-secondary text-secondary-foreground hover:opacity-90',
+        primary:
+          'bg-primary text-primary-foreground shadow-sm hover:bg-neutral-700',
+        secondary:
+          'bg-secondary text-secondary-foreground shadow-sm hover:bg-neutral-700',
         outline:
-          'border border-border bg-transparent text-foreground hover:bg-muted',
-        ghost: 'bg-transparent text-foreground hover:bg-muted',
-        whatsapp: 'bg-whatsapp text-whatsapp-foreground hover:opacity-90',
+          'border border-border bg-transparent text-foreground hover:border-foreground/30 hover:bg-accent',
+        ghost: 'bg-transparent text-foreground hover:bg-accent',
+        whatsapp:
+          'bg-whatsapp text-whatsapp-foreground shadow-sm hover:bg-neutral-700',
         danger:
-          'bg-destructive text-destructive-foreground hover:opacity-90',
+          'bg-destructive text-destructive-foreground shadow-sm hover:bg-neutral-700',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
-        sm: 'text-body-sm h-9 px-3',
+        sm: 'text-body-sm h-9 px-3.5',
         md: 'text-body-sm h-11 px-5',
         lg: 'text-body h-12 px-6',
         icon: 'h-10 w-10',

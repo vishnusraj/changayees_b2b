@@ -9,11 +9,11 @@ export function ConstructionBanner() {
   return (
     <div
       role="status"
-      className="flex items-center justify-center gap-2 bg-warning px-4 py-2 text-center text-caption font-medium text-warning-foreground sm:text-body-sm"
+      className="flex items-center justify-center gap-2 bg-neutral-900 px-4 py-2 text-center text-caption font-medium tracking-wide text-neutral-50 sm:text-body-sm"
     >
       <Construction className="hidden h-4 w-4 shrink-0 sm:block" aria-hidden />
       <span>
-        🚧 This website is under construction — all data shown is for testing
+        This website is under construction — all data shown is for testing
         purposes only.
       </span>
     </div>
