@@ -75,7 +75,7 @@ export default function AdminDashboardPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-h3">Dashboard</h1>
         <div className="flex flex-wrap gap-2">
-          <Button asChild size="sm">
+          <Button asChild size="sm" variant="accent">
             <Link href="/admin/orders/new">
               <Plus className="h-4 w-4" aria-hidden />
               New Order
@@ -105,13 +105,15 @@ export default function AdminDashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-primary" aria-hidden />
+              <TrendingUp className="h-4 w-4 text-brand" aria-hidden />
               Lead analytics
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-baseline gap-2">
-              <span className="text-h2">{stats.leads.conversionRate}%</span>
+              <span className="text-h2 text-brand">
+                {stats.leads.conversionRate}%
+              </span>
               <span className="text-body-sm text-muted-foreground">
                 conversion ({stats.leads.won} won)
               </span>
@@ -128,7 +130,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-muted">
                       <div
-                        className="h-full rounded-full bg-primary"
+                        className="h-full rounded-full bg-gradient-to-r from-brand to-brand/80"
                         style={{ width: `${(count / sourceMax) * 100}%` }}
                       />
                     </div>
@@ -159,7 +161,7 @@ export default function AdminDashboardPage() {
         <Card>
           <CardHeader className="flex-row items-center justify-between">
             <CardTitle>Recent leads</CardTitle>
-            <Link href="/admin/leads" className="text-body-sm font-semibold text-primary hover:underline">
+            <Link href="/admin/leads" className="text-body-sm font-semibold text-brand hover:underline">
               View all
             </Link>
           </CardHeader>
@@ -171,7 +173,7 @@ export default function AdminDashboardPage() {
                 {stats.recentLeads.map((lead) => (
                   <li key={lead.id} className="flex items-center justify-between gap-2 py-2.5">
                     <Link href={`/admin/leads/${lead.id}`} className="min-w-0">
-                      <span className="block truncate text-body-sm font-medium text-primary hover:underline">
+                      <span className="block truncate text-body-sm font-medium text-brand hover:underline">
                         {lead.name}
                       </span>
                       <span className="text-caption text-muted-foreground">
@@ -189,7 +191,7 @@ export default function AdminDashboardPage() {
         <Card>
           <CardHeader className="flex-row items-center justify-between">
             <CardTitle>Recent orders</CardTitle>
-            <Link href="/admin/orders" className="text-body-sm font-semibold text-primary hover:underline">
+            <Link href="/admin/orders" className="text-body-sm font-semibold text-brand hover:underline">
               View all
             </Link>
           </CardHeader>
@@ -201,7 +203,7 @@ export default function AdminDashboardPage() {
                 {stats.recentOrders.map((order) => (
                   <li key={order.id} className="flex items-center justify-between gap-2 py-2.5">
                     <Link href={`/admin/orders/${order.id}`} className="min-w-0">
-                      <span className="block truncate text-body-sm font-medium text-primary hover:underline">
+                      <span className="block truncate text-body-sm font-medium text-brand hover:underline">
                         {order.customerName}
                       </span>
                       <span className="text-caption text-muted-foreground">

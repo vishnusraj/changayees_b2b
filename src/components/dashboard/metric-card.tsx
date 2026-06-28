@@ -27,7 +27,7 @@ export function MetricCard({
       <div className="flex items-start justify-between">
         <p className="text-body-sm text-muted-foreground">{label}</p>
         {Icon && (
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-subtle text-brand ring-1 ring-brand/10">
             <Icon className="h-4 w-4" aria-hidden />
           </span>
         )}
