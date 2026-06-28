@@ -38,7 +38,7 @@ export async function SiteFooter() {
     <footer className="border-t border-border bg-secondary text-secondary-foreground">
       <div className="container grid gap-10 py-14 md:grid-cols-12">
         <div className="space-y-4 md:col-span-4">
-          <Logo height={36} />
+          <Logo light height={36} />
           <p className="text-body-sm max-w-xs text-secondary-foreground/70">
             {s.footer_about}
           </p>

@@ -66,7 +66,6 @@ export function ContactCta() {
           <WhatsAppCTA
             size="lg"
             message="Hi, I have a bulk uniform requirement."
-            className="border border-white/40 bg-transparent text-white shadow-none hover:border-white hover:bg-white/10"
           />
         </div>
       </div>

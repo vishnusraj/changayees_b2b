@@ -18,10 +18,13 @@ export function Logo({
   className,
   height = 40,
   priority = false,
+  light = false,
 }: {
   className?: string;
   height?: number;
   priority?: boolean;
+  /** Render the mark in solid white — for placement on dark surfaces. */
+  light?: boolean;
 }) {
   // Width is derived from the requested height so the box matches the asset's
   // real aspect ratio (prevents layout shift). The image is then constrained
@@ -40,7 +43,11 @@ export function Logo({
         height={height}
         priority={priority}
         style={{ height, width: 'auto' }}
-        className="block max-w-full object-contain"
+        className={cn(
+          'block max-w-full object-contain',
+          // brightness-0 turns the mark black; invert flips it to white.
+          light && 'brightness-0 invert',
+        )}
       />
     </Link>
   );
