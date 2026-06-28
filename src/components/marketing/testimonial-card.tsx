@@ -19,16 +19,16 @@ export function TestimonialCard({
   return (
     <figure
       className={cn(
-        'flex h-full flex-col gap-4 rounded-xl border border-border bg-card p-6 shadow-elevation-1',
+        'flex h-full flex-col gap-4 rounded-xl border border-border bg-card p-6 shadow-premium transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-premium-hover',
         className,
       )}
     >
-      <Quote className="h-6 w-6 text-primary/30" aria-hidden />
+      <Quote className="h-6 w-6 text-brand/40" aria-hidden />
       <blockquote className="text-body flex-1 text-foreground">
         “{testimonial.quote}”
       </blockquote>
       <figcaption className="flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-body-sm font-semibold text-primary">
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-subtle text-body-sm font-semibold text-brand ring-1 ring-brand/10">
           {testimonial.name.charAt(0)}
         </span>
         <span className="text-body-sm">

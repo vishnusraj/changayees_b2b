@@ -15,7 +15,8 @@ interface QuickAction {
   href: string;
   icon: LucideIcon;
   external?: boolean;
-  accent: string;
+  /** WhatsApp keeps its brand green; everything else uses the indigo accent. */
+  green?: boolean;
 }
 
 /**
@@ -26,37 +27,21 @@ export function QuickActions() {
   const phone = process.env.NEXT_PUBLIC_CONTACT_PHONE;
 
   const actions: QuickAction[] = [
-    {
-      label: 'Request Quote',
-      href: '/rfq',
-      icon: ClipboardList,
-      accent: 'bg-primary/10 text-primary',
-    },
-    {
-      label: 'Track Order',
-      href: '/track',
-      icon: PackageSearch,
-      accent: 'bg-status-dispatch/10 text-status-dispatch',
-    },
-    {
-      label: 'Catalogs',
-      href: '/catalogs',
-      icon: Download,
-      accent: 'bg-status-production/10 text-status-production',
-    },
+    { label: 'Request Quote', href: '/rfq', icon: ClipboardList },
+    { label: 'Track Order', href: '/track', icon: PackageSearch },
+    { label: 'Catalogs', href: '/catalogs', icon: Download },
     {
       label: 'Call Us',
       href: phone ? `tel:${phone}` : '/contact',
       icon: Phone,
       external: Boolean(phone),
-      accent: 'bg-brand-magenta/10 text-brand-magenta',
     },
     {
       label: 'WhatsApp',
       href: whatsappHref('Hi, I have a bulk uniform requirement.'),
       icon: MessageCircle,
       external: true,
-      accent: 'bg-whatsapp/10 text-whatsapp',
+      green: true,
     },
   ];
 
@@ -67,8 +52,10 @@ export function QuickActions() {
           <>
             <span
               className={cn(
-                'flex h-11 w-11 items-center justify-center rounded-xl',
-                action.accent,
+                'flex h-11 w-11 items-center justify-center rounded-xl ring-1 transition-colors duration-200',
+                action.green
+                  ? 'bg-whatsapp/10 text-whatsapp ring-whatsapp/15 group-hover:bg-whatsapp group-hover:text-whatsapp-foreground'
+                  : 'bg-brand-subtle text-brand ring-brand/10 group-hover:bg-brand group-hover:text-brand-foreground',
               )}
             >
               <action.icon className="h-5 w-5" aria-hidden />
@@ -77,7 +64,7 @@ export function QuickActions() {
           </>
         );
         const className =
-          'focus-ring flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 text-center shadow-elevation-1 transition-shadow hover:shadow-elevation-2 active:scale-95';
+          'focus-ring group flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 text-center shadow-premium transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-premium-hover active:scale-95';
 
         return action.external ? (
           <a

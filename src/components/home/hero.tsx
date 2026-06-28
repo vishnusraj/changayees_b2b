@@ -77,28 +77,38 @@ export async function Hero() {
             </dl>
           </div>
 
-          {/* Premium stat panel — desktop only */}
+          {/* Premium stat panel — desktop only (monochrome on dark) */}
           <div className="hidden lg:block">
-            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-neutral-900 p-8 text-white shadow-elevation-4 ring-1 ring-white/5">
-              {/* inner indigo glow */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-neutral-900 to-neutral-950 p-8 shadow-elevation-4 ring-1 ring-white/10">
+              {/* lit top edge + soft neutral glow for depth */}
               <div
-                className="glow-accent pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full opacity-80 blur-2xl"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-white/[0.06] blur-3xl"
                 aria-hidden
               />
               <div className="relative">
-                <p className="text-overline text-brand">Why Changayees</p>
-                <p className="text-h2 mt-2 max-w-sm text-white">
+                <p className="text-overline text-white/45">Why Changayees</p>
+                <p className="text-h2 mt-3 max-w-sm text-white">
                   One supplier. Every uniform. Full transparency.
                 </p>
-                <div className="mt-8 grid grid-cols-3 gap-4">
+                <div className="mt-8 grid grid-cols-3 gap-3">
                   {STATS.map((stat) => (
                     <div
                       key={stat.label}
-                      className="rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur"
+                      className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
                     >
-                      <stat.icon className="h-5 w-5 text-brand" aria-hidden />
-                      <p className="text-h4 mt-2 text-white">{stat.value}</p>
-                      <p className="text-caption text-white/60">{stat.label}</p>
+                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-white ring-1 ring-white/10">
+                        <stat.icon className="h-5 w-5" aria-hidden />
+                      </span>
+                      <p className="text-h4 mt-3 font-semibold text-white">
+                        {stat.value}
+                      </p>
+                      <p className="text-caption mt-0.5 text-white/50">
+                        {stat.label}
+                      </p>
                     </div>
                   ))}
                 </div>
