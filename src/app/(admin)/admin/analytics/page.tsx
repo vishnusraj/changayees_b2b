@@ -91,7 +91,7 @@ export default function AdminAnalyticsPage() {
                   {data.daily.map((d) => (
                     <div
                       key={d.date}
-                      className="flex-1 rounded-t bg-primary/70 transition-all hover:bg-primary"
+                      className="flex-1 rounded-t bg-brand/70 transition-all hover:bg-brand"
                       style={{ height: `${(d.count / dailyMax) * 100}%` }}
                       title={`${d.date}: ${d.count}`}
                     />

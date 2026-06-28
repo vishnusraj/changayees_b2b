@@ -95,7 +95,7 @@ export default function AdminLeadsPage() {
       cell: (row) => (
         <Link
           href={`/admin/leads/${row.id}`}
-          className="font-medium text-primary hover:underline"
+          className="font-medium text-brand hover:underline"
         >
           {row.name}
           <span className="block text-caption text-muted-foreground">
@@ -140,7 +140,7 @@ export default function AdminLeadsPage() {
               Export
             </a>
           </Button>
-          <Button size="sm" onClick={() => setCreateOpen(true)}>
+          <Button variant="accent" size="sm" onClick={() => setCreateOpen(true)}>
             <Plus className="h-4 w-4" aria-hidden />
             New Lead
           </Button>

@@ -232,7 +232,7 @@ export default function NewOrderPage() {
 
         {error && <Alert variant="danger">{error}</Alert>}
 
-        <Button type="submit" loading={submitting}>
+        <Button type="submit" variant="accent" loading={submitting}>
           Create order
         </Button>
       </form>

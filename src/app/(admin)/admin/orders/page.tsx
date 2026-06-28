@@ -76,7 +76,7 @@ export default function AdminOrdersPage() {
       cell: (row) => (
         <Link
           href={`/admin/orders/${row.id}`}
-          className="font-medium text-primary hover:underline"
+          className="font-medium text-brand hover:underline"
         >
           {row.customerName}
           <span className="block text-caption text-muted-foreground">
@@ -114,7 +114,7 @@ export default function AdminOrdersPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-h3">Orders</h1>
-        <Button asChild size="sm">
+        <Button asChild variant="accent" size="sm">
           <Link href="/admin/orders/new">
             <Plus className="h-4 w-4" aria-hidden />
             New Order

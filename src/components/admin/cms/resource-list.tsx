@@ -54,7 +54,7 @@ export function ResourceList({ config }: { config: ResourceConfig }) {
         return (
           <Link
             href={`${config.basePath}/${String(row.id)}`}
-            className="font-medium text-primary hover:underline"
+            className="font-medium text-brand hover:underline"
           >
             {String(value ?? '—')}
           </Link>

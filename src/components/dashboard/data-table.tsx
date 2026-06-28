@@ -57,7 +57,7 @@ export function DataTable<T>({
   return (
     <>
       {/* Desktop table */}
-      <div className="hidden overflow-hidden rounded-lg border border-border md:block">
+      <div className="hidden overflow-hidden rounded-xl border border-border bg-card shadow-premium md:block">
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-border bg-muted/50">
@@ -103,7 +103,7 @@ export function DataTable<T>({
         {rows.map((row) => (
           <li
             key={getRowKey(row)}
-            className="rounded-lg border border-border bg-card p-4"
+            className="rounded-xl border border-border bg-card p-4 shadow-premium"
           >
             <dl className="space-y-1.5">
               {columns

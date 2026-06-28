@@ -86,7 +86,7 @@ export default function AdminSettingsPage() {
         </Card>
       ))}
 
-      <Button loading={saving} onClick={save}>
+      <Button variant="accent" loading={saving} onClick={save}>
         Save settings
       </Button>
     </div>

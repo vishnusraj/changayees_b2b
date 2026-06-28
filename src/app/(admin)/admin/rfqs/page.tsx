@@ -88,7 +88,7 @@ export default function AdminRfqsPage() {
         row.leadId ? (
           <Link
             href={`/admin/leads/${row.leadId}`}
-            className="font-medium text-primary hover:underline"
+            className="font-medium text-brand hover:underline"
           >
             {row.contactPerson}
             <span className="block text-caption text-muted-foreground">

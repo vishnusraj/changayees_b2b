@@ -98,7 +98,13 @@ function LoginForm() {
               </div>
             )}
 
-            <Button type="submit" fullWidth size="lg" loading={loading}>
+            <Button
+              type="submit"
+              variant="accent"
+              fullWidth
+              size="lg"
+              loading={loading}
+            >
               Sign in
             </Button>
           </form>

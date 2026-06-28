@@ -18,11 +18,11 @@ export default function CmsHubPage() {
           <Link
             key={mod.slug}
             href={`/admin/cms/${mod.slug}`}
-            className="focus-ring group flex items-center justify-between rounded-xl border border-border bg-card p-5 shadow-elevation-1 transition-shadow hover:shadow-elevation-2"
+            className="focus-ring group flex items-center justify-between rounded-xl border border-border bg-card p-5 shadow-premium transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-premium-hover"
           >
             <span className="text-h4">{mod.label}</span>
             <ArrowRight
-              className="h-4 w-4 text-primary transition-transform group-hover:translate-x-0.5"
+              className="h-4 w-4 text-brand transition-transform group-hover:translate-x-0.5"
               aria-hidden
             />
           </Link>
@@ -30,14 +30,14 @@ export default function CmsHubPage() {
 
         <Link
           href="/admin/settings"
-          className="focus-ring group flex items-center justify-between rounded-xl border border-border bg-card p-5 shadow-elevation-1 transition-shadow hover:shadow-elevation-2"
+          className="focus-ring group flex items-center justify-between rounded-xl border border-border bg-card p-5 shadow-premium transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-premium-hover"
         >
           <span className="text-h4 flex items-center gap-2">
             <SettingsIcon className="h-5 w-5 text-muted-foreground" aria-hidden />
             Settings
           </span>
           <ArrowRight
-            className="h-4 w-4 text-primary transition-transform group-hover:translate-x-0.5"
+            className="h-4 w-4 text-brand transition-transform group-hover:translate-x-0.5"
             aria-hidden
           />
         </Link>

@@ -265,7 +265,7 @@ function FolderButton({
       onClick={onClick}
       className={cn(
         'text-body-sm focus-ring flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left',
-        active ? 'bg-primary/10 font-medium text-primary' : 'text-muted-foreground hover:bg-muted',
+        active ? 'bg-brand-subtle font-medium text-brand ring-1 ring-brand/10' : 'text-muted-foreground hover:bg-muted',
       )}
     >
       {icon}
