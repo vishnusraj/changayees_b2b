@@ -54,7 +54,15 @@ export function SectionHeading({
     >
       <div className={cn('space-y-2', centered && 'max-w-2xl')}>
         {eyebrow && (
-          <p className="text-overline text-muted-foreground">{eyebrow}</p>
+          <span
+            className={cn(
+              'text-overline inline-flex w-fit items-center gap-1.5 rounded-full border border-brand/20 bg-brand-subtle px-3 py-1 text-brand',
+              centered && 'mx-auto',
+            )}
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden />
+            {eyebrow}
+          </span>
         )}
         <h2 className="text-h2 font-bold uppercase tracking-[0.06em]">{title}</h2>
         {subtitle && (

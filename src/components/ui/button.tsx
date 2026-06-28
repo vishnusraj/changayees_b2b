@@ -10,17 +10,19 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-primary text-primary-foreground shadow-sm hover:bg-neutral-700',
+          'bg-primary text-primary-foreground shadow-premium hover:-translate-y-px hover:bg-neutral-800 hover:shadow-premium-hover',
+        accent:
+          'bg-brand text-brand-foreground shadow-glow hover:-translate-y-px hover:brightness-110',
         secondary:
-          'bg-secondary text-secondary-foreground shadow-sm hover:bg-neutral-700',
+          'bg-secondary text-secondary-foreground shadow-premium hover:-translate-y-px hover:bg-neutral-700',
         outline:
-          'border border-border bg-transparent text-foreground hover:border-foreground/30 hover:bg-accent',
+          'border border-border bg-card text-foreground shadow-sm hover:border-foreground/30 hover:bg-accent',
         ghost: 'bg-transparent text-foreground hover:bg-accent',
         whatsapp:
-          'bg-whatsapp text-whatsapp-foreground shadow-sm hover:brightness-95',
+          'bg-whatsapp text-whatsapp-foreground shadow-sm hover:-translate-y-px hover:brightness-95',
         danger:
           'bg-destructive text-destructive-foreground shadow-sm hover:bg-neutral-700',
-        link: 'text-primary underline-offset-4 hover:underline',
+        link: 'text-brand underline-offset-4 hover:underline',
       },
       size: {
         sm: 'text-body-sm h-9 px-3.5',

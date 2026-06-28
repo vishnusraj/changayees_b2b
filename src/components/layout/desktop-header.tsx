@@ -26,7 +26,7 @@ export function DesktopHeader() {
           >
             Track Order
           </Link>
-          <Button asChild>
+          <Button asChild variant="accent">
             <Link href="/rfq">Request Quote</Link>
           </Button>
         </div>

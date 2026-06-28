@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
 import { SITE } from '@/lib/constants';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo';
 import { ConstructionBanner } from '@/components/layout/construction-banner';
 import './globals.css';
 
+// Geist (Vercel's typeface) is the primary UI font; Inter is kept as a fallback
+// variable so any lingering `--font-inter` references still resolve.
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -53,7 +56,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${inter.variable}`}
+      suppressHydrationWarning
+    >
       <body className="min-h-dvh">
         <ConstructionBanner />
         {children}

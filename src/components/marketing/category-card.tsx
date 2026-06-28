@@ -22,11 +22,11 @@ export function CategoryCard({
     <Link
       href={`/products?category=${category.slug}`}
       className={cn(
-        'focus-ring group flex h-full flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-elevation-1 transition-shadow hover:shadow-elevation-2',
+        'focus-ring group flex h-full flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-premium transition-all duration-200 ease-out hover:-translate-y-1 hover:border-foreground/15 hover:shadow-premium-hover',
         className,
       )}
     >
-      <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+      <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-subtle text-brand ring-1 ring-brand/10 transition-colors duration-200 group-hover:bg-brand group-hover:text-brand-foreground">
         <Icon className="h-5 w-5" aria-hidden />
       </span>
       <div className="flex-1 space-y-1">
@@ -37,7 +37,7 @@ export function CategoryCard({
           </p>
         )}
       </div>
-      <span className="text-body-sm inline-flex items-center gap-1 font-semibold text-primary">
+      <span className="text-body-sm inline-flex items-center gap-1 font-semibold text-brand">
         Explore
         <ArrowRight
           className="h-4 w-4 transition-transform group-hover:translate-x-0.5"

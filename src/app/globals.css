@@ -39,7 +39,13 @@
 
     --border: 0 0% 90%;
     --input: 0 0% 89%;
-    --ring: 0 0% 9%;
+    /* Focus ring uses the indigo accent for a premium feel */
+    --ring: 243 75% 59%;
+
+    /* ---- Accent — a single restrained indigo (premium SaaS) ---- */
+    --brand: 243 75% 59%;
+    --brand-foreground: 0 0% 100%;
+    --brand-subtle: 243 75% 96%;
 
     /* ---- Neutral scale (50 → 900), pure grayscale ---- */
     --neutral-50: 0 0% 98%;
@@ -83,11 +89,11 @@
     /* ---- Radius — minimal for a sharp, editorial monochrome look ---- */
     --radius: 0.25rem;
 
-    /* ---- Elevation (subtle, no heavy shadows) ---- */
-    --shadow-1: 0 1px 2px 0 hsl(0 0% 0% / 0.04), 0 1px 3px 0 hsl(0 0% 0% / 0.06);
-    --shadow-2: 0 2px 4px -1px hsl(0 0% 0% / 0.06), 0 4px 8px -2px hsl(0 0% 0% / 0.08);
-    --shadow-3: 0 8px 16px -4px hsl(0 0% 0% / 0.08), 0 4px 8px -2px hsl(0 0% 0% / 0.06);
-    --shadow-4: 0 16px 32px -8px hsl(0 0% 0% / 0.12), 0 8px 16px -4px hsl(0 0% 0% / 0.08);
+    /* ---- Elevation (soft, layered — premium "floating" surfaces) ---- */
+    --shadow-1: 0 1px 2px 0 hsl(0 0% 0% / 0.04), 0 1px 3px -1px hsl(0 0% 0% / 0.05);
+    --shadow-2: 0 1px 2px 0 hsl(0 0% 0% / 0.04), 0 4px 12px -2px hsl(0 0% 0% / 0.08);
+    --shadow-3: 0 2px 6px -2px hsl(0 0% 0% / 0.05), 0 12px 28px -6px hsl(0 0% 0% / 0.12);
+    --shadow-4: 0 8px 16px -6px hsl(0 0% 0% / 0.06), 0 28px 56px -12px hsl(0 0% 0% / 0.18);
   }
 
   .dark {
@@ -258,6 +264,47 @@
   /* Base card surface. */
   .card-surface {
     @apply rounded-lg border border-border bg-card text-card-foreground shadow-elevation-1;
+  }
+
+  /* ---- Premium atmosphere helpers ---- */
+
+  /* Faint grid backdrop for hero/section depth (pair with a fade mask). */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(0 0% 0% / 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(0 0% 0% / 0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  /* Subtle dot matrix backdrop. */
+  .bg-dots {
+    background-image: radial-gradient(hsl(0 0% 0% / 0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Radial fade mask so patterns dissolve toward the edges. */
+  .mask-fade {
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 35%, transparent 78%);
+    mask-image: radial-gradient(ellipse at center, #000 35%, transparent 78%);
+  }
+
+  /* Soft indigo glow blob (place absolutely, blur-heavy). */
+  .glow-accent {
+    background: radial-gradient(
+      closest-side,
+      hsl(var(--brand) / 0.22),
+      transparent
+    );
+  }
+
+  /* Elevated premium surface with a lit top edge. */
+  .surface {
+    @apply rounded-xl border border-border bg-card shadow-premium;
+  }
+
+  /* Monochrome gradient ink for display headings. */
+  .text-gradient {
+    @apply bg-gradient-to-br from-foreground via-foreground to-neutral-500 bg-clip-text text-transparent;
   }
 
   /* Accessible focus ring — attach to interactive elements. */

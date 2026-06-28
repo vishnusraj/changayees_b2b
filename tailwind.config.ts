@@ -80,8 +80,12 @@ const config: Config = {
           800: withAlpha('--neutral-800'),
           900: withAlpha('--neutral-900'),
         },
-        // Brand palette (from logo)
+        // Brand palette: a single restrained indigo accent (DEFAULT) plus the
+        // legacy logo hues (kept for back-compat, now neutralised in CSS vars).
         brand: {
+          DEFAULT: withAlpha('--brand'),
+          foreground: withAlpha('--brand-foreground'),
+          subtle: withAlpha('--brand-subtle'),
           blue: withAlpha('--brand-blue'),
           teal: withAlpha('--brand-teal'),
           magenta: withAlpha('--brand-magenta'),
@@ -133,9 +137,16 @@ const config: Config = {
         'elevation-4': 'var(--shadow-4)',
         card: 'var(--shadow-1)',
         'card-hover': 'var(--shadow-2)',
+        // Premium: layered shadow + a 1px inner top highlight ("lit edge").
+        premium:
+          '0 1px 0 0 hsl(0 0% 100% / 0.6) inset, 0 1px 2px 0 hsl(0 0% 0% / 0.05), 0 8px 24px -8px hsl(0 0% 0% / 0.12)',
+        'premium-hover':
+          '0 1px 0 0 hsl(0 0% 100% / 0.7) inset, 0 2px 4px 0 hsl(0 0% 0% / 0.06), 0 16px 40px -12px hsl(0 0% 0% / 0.18)',
+        // Soft indigo accent glow for CTAs / focal points.
+        glow: '0 8px 28px -6px hsl(var(--brand) / 0.45)',
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-geist-sans)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       // Typography scale tokens (also available as the `.text-*` utility classes)
       fontSize: {
