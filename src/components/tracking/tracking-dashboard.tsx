@@ -42,7 +42,9 @@ export function TrackingDashboard({ view }: { view: TrackingView }) {
 
       <section className="space-y-3">
         <h2 className="text-h4">Timeline</h2>
-        <TrackingTimeline events={view.timeline} />
+        <div className="rounded-xl border border-border bg-card p-5 shadow-premium">
+          <TrackingTimeline events={view.timeline} />
+        </div>
       </section>
 
       <section className="space-y-3">

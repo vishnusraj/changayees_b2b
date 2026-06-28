@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { formatDateTime } from '@/lib/format';
-import { getStatusMeta, TRACKING_COLOR_CLASSES } from '@/lib/order-status';
+import { getStatusMeta } from '@/lib/order-status';
 import type { OrderStatus } from '@/generated/prisma';
 
 export interface TimelineEvent {
@@ -24,20 +24,25 @@ export function TrackingTimeline({ events }: { events: TimelineEvent[] }) {
       />
       {events.map((event, index) => {
         const meta = getStatusMeta(event.status);
-        const colors = TRACKING_COLOR_CLASSES[meta.color];
         const isLatest = index === 0;
         return (
           <li key={`${event.status}-${index}`} className="relative">
             <span
               className={cn(
-                'absolute -left-6 top-1 h-3.5 w-3.5 rounded-full ring-4 ring-background',
-                colors.dot,
-                isLatest && 'animate-pulse',
+                'absolute top-1 rounded-full ring-4 ring-background transition-colors',
+                isLatest
+                  ? '-left-[26px] h-4 w-4 bg-brand shadow-glow'
+                  : '-left-6 top-1.5 h-3 w-3 bg-neutral-300',
               )}
               aria-hidden
             />
             <div className="space-y-0.5">
-              <p className="text-body-sm font-semibold text-foreground">
+              <p
+                className={cn(
+                  'text-body-sm font-semibold',
+                  isLatest ? 'text-brand' : 'text-foreground',
+                )}
+              >
                 {meta.label}
               </p>
               <p className="text-caption text-muted-foreground">

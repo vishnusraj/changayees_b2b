@@ -1,8 +1,7 @@
 import { CalendarClock, Package } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import { formatDate } from '@/lib/format';
-import { getStatusMeta, TRACKING_COLOR_CLASSES } from '@/lib/order-status';
+import { getStatusMeta } from '@/lib/order-status';
 import type { OrderStatus } from '@/generated/prisma';
 import { ProgressTracker } from './progress-tracker';
 
@@ -20,11 +19,10 @@ export function StatusCard({
   expectedDelivery?: Date | string | null;
 }) {
   const meta = getStatusMeta(status);
-  const colors = TRACKING_COLOR_CLASSES[meta.color];
 
   return (
     <Card className="overflow-hidden">
-      <div className={cn('h-1.5 w-full', colors.bg)} />
+      <div className="h-1.5 w-full bg-gradient-to-r from-brand to-brand/70" />
       <div className="space-y-4 p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-1">
@@ -33,16 +31,11 @@ export function StatusCard({
                 Order {orderNumber}
               </p>
             )}
-            <div className="flex items-center gap-2">
-              <span
-                className={cn(
-                  'flex h-9 w-9 items-center justify-center rounded-full',
-                  colors.soft,
-                )}
-              >
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-subtle text-brand ring-1 ring-brand/10">
                 <Package className="h-5 w-5" aria-hidden />
               </span>
-              <h1 className={cn('text-h3', colors.text)}>{meta.label}</h1>
+              <h1 className="text-h3 text-foreground">{meta.label}</h1>
             </div>
           </div>
         </div>

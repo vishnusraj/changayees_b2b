@@ -58,7 +58,7 @@ export function TrackingSearch({
           {error}
         </p>
       )}
-      <Button type="submit" fullWidth loading={loading}>
+      <Button type="submit" variant="accent" fullWidth loading={loading}>
         <Search className="h-4 w-4" aria-hidden />
         Track Order
       </Button>

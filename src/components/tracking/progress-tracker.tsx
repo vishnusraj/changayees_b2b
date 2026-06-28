@@ -1,9 +1,5 @@
 import { cn } from '@/lib/utils';
-import {
-  getStatusMeta,
-  getStatusProgress,
-  TRACKING_COLOR_CLASSES,
-} from '@/lib/order-status';
+import { getStatusMeta, getStatusProgress } from '@/lib/order-status';
 import type { OrderStatus } from '@/generated/prisma';
 
 /** ProgressTracker — visual progress bar + percentage + current stage label. */
@@ -16,15 +12,14 @@ export function ProgressTracker({
 }) {
   const meta = getStatusMeta(status);
   const progress = getStatusProgress(status);
-  const colors = TRACKING_COLOR_CLASSES[meta.color];
 
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex items-center justify-between">
-        <span className={cn('text-body-sm font-semibold', colors.text)}>
+        <span className="text-body-sm font-semibold text-foreground">
           {meta.label}
         </span>
-        <span className="text-body-sm font-semibold text-foreground">
+        <span className="text-body-sm font-semibold text-brand">
           {progress}%
         </span>
       </div>
@@ -36,7 +31,7 @@ export function ProgressTracker({
         aria-valuemax={100}
       >
         <div
-          className={cn('h-full rounded-full transition-all', colors.bg)}
+          className="h-full rounded-full bg-gradient-to-r from-brand to-brand/80 transition-all"
           style={{ width: `${progress}%` }}
         />
       </div>
