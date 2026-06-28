@@ -8,6 +8,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { whatsappHref } from '@/lib/whatsapp';
+import { getWhatsAppNumber } from '@/lib/whatsapp.server';
 import { cn } from '@/lib/utils';
 
 interface QuickAction {
@@ -23,8 +24,9 @@ interface QuickAction {
  * QuickActions — app-style action cards (mobile dashboard) that also read well
  * as a desktop band. Request Quote / Track / Catalog / Call / WhatsApp.
  */
-export function QuickActions() {
+export async function QuickActions() {
   const phone = process.env.NEXT_PUBLIC_CONTACT_PHONE;
+  const waNumber = await getWhatsAppNumber();
 
   const actions: QuickAction[] = [
     { label: 'Request Quote', href: '/rfq', icon: ClipboardList },
@@ -38,7 +40,7 @@ export function QuickActions() {
     },
     {
       label: 'WhatsApp',
-      href: whatsappHref('Hi, I have a bulk uniform requirement.'),
+      href: whatsappHref('Hi, I have a bulk uniform requirement.', waNumber),
       icon: MessageCircle,
       external: true,
       green: true,

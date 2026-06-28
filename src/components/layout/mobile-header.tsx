@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Search, MessageCircle } from 'lucide-react';
 import { Logo } from '@/components/brand/logo';
 import { SearchOverlay } from '@/components/mobile/search-overlay';
-import { whatsappHref } from '@/lib/whatsapp';
+import { useWhatsAppHref } from '@/components/providers/whatsapp-provider';
 import { trackEvent } from '@/lib/analytics-client';
 
 /**
@@ -14,7 +14,7 @@ import { trackEvent } from '@/lib/analytics-client';
  */
 export function MobileHeader() {
   const [searchOpen, setSearchOpen] = React.useState(false);
-  const waHref = whatsappHref();
+  const waHref = useWhatsAppHref();
   const waExternal = waHref.startsWith('http');
 
   return (

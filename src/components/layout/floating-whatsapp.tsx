@@ -3,6 +3,7 @@
 import { MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMobileShell } from '@/components/mobile/mobile-shell-context';
+import { useWhatsAppHref } from '@/components/providers/whatsapp-provider';
 import { trackEvent } from '@/lib/analytics-client';
 
 /**
@@ -13,16 +14,14 @@ import { trackEvent } from '@/lib/analytics-client';
  */
 export function FloatingWhatsApp() {
   const { stickyActive } = useMobileShell();
-  const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
-  const href = number
-    ? `https://wa.me/${number.replace(/[^0-9]/g, '')}`
-    : '/contact';
+  const href = useWhatsAppHref();
+  const external = href.startsWith('http');
 
   return (
     <a
       href={href}
-      target={number ? '_blank' : undefined}
-      rel={number ? 'noopener noreferrer' : undefined}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
       onClick={() => trackEvent('whatsapp_clicked', { context: 'floating' })}
       aria-label="Chat on WhatsApp"
       className={cn(

@@ -4,6 +4,8 @@ import { GeistSans } from 'geist/font/sans';
 import { SITE } from '@/lib/constants';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo';
 import { ConstructionBanner } from '@/components/layout/construction-banner';
+import { WhatsAppProvider } from '@/components/providers/whatsapp-provider';
+import { getWhatsAppNumber } from '@/lib/whatsapp.server';
 import './globals.css';
 
 // Geist (Vercel's typeface) is the primary UI font; Inter is kept as a fallback
@@ -52,9 +54,10 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const whatsAppNumber = await getWhatsAppNumber();
   return (
     <html
       lang="en"
@@ -63,7 +66,9 @@ export default function RootLayout({
     >
       <body className="min-h-dvh">
         <ConstructionBanner />
-        {children}
+        <WhatsAppProvider number={whatsAppNumber}>
+          {children}
+        </WhatsAppProvider>
       </body>
     </html>
   );

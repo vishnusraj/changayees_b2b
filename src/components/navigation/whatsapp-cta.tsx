@@ -3,7 +3,7 @@
 import { MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { whatsappHref } from '@/lib/whatsapp';
+import { useWhatsAppHref } from '@/components/providers/whatsapp-provider';
 import { trackEvent } from '@/lib/analytics-client';
 
 /**
@@ -25,7 +25,7 @@ export function WhatsAppCTA({
   className?: string;
   context?: string;
 }) {
-  const href = whatsappHref(message);
+  const href = useWhatsAppHref(message);
   const external = href.startsWith('http');
   return (
     <Button

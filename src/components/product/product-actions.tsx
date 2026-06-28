@@ -6,7 +6,7 @@ import { Phone, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer } from '@/components/ui/drawer';
 import { StickyCTA } from '@/components/mobile/sticky-cta';
-import { whatsappHref } from '@/lib/whatsapp';
+import { useWhatsAppHref } from '@/components/providers/whatsapp-provider';
 import { ProductInquiryForm } from './product-inquiry-form';
 
 /**
@@ -26,7 +26,7 @@ export function ProductActions({
 
   const rfqHref = `/rfq?product=${slug}`;
   const waMessage = `Hi, I'm interested in ${name} (bulk order). Please share a quote.`;
-  const waHref = whatsappHref(waMessage);
+  const waHref = useWhatsAppHref(waMessage);
   const phone = process.env.NEXT_PUBLIC_CONTACT_PHONE;
 
   return (

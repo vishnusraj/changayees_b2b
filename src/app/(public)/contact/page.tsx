@@ -5,6 +5,7 @@ import { Container } from '@/components/layout/container';
 import { Button } from '@/components/ui/button';
 import { getResolvedSettings } from '@/services/settings.service';
 import { whatsappHref } from '@/lib/whatsapp';
+import { getWhatsAppNumber } from '@/lib/whatsapp.server';
 import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
@@ -18,7 +19,11 @@ export const metadata: Metadata = buildMetadata({
 
 export default async function ContactPage() {
   const s = await getResolvedSettings();
-  const waHref = whatsappHref('Hi, I have an enquiry about uniform procurement.');
+  const waNumber = await getWhatsAppNumber();
+  const waHref = whatsappHref(
+    'Hi, I have an enquiry about uniform procurement.',
+    waNumber,
+  );
   const waExternal = waHref.startsWith('http');
 
   const methods = [
