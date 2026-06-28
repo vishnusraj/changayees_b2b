@@ -78,16 +78,25 @@ export default async function AboutPage() {
         </p>
       </div>
 
-      <div className="mt-12 flex flex-col items-center justify-center gap-3 rounded-2xl bg-secondary px-6 py-10 text-center text-secondary-foreground">
+      <div className="mt-12 flex flex-col items-center justify-center gap-3 rounded-lg bg-neutral-900 px-6 py-10 text-center text-neutral-50">
         <h2 className="text-h3">Ready to procure with confidence?</h2>
-        <p className="text-body-sm max-w-md text-secondary-foreground/70">
+        <p className="text-body-sm max-w-md text-neutral-300">
           Tell us your requirements and get a tailored quotation.
         </p>
         <div className="mt-2 flex flex-wrap justify-center gap-3">
-          <Button asChild size="lg">
+          <Button
+            asChild
+            size="lg"
+            className="bg-white text-neutral-900 shadow-sm hover:bg-neutral-200"
+          >
             <Link href="/rfq">Request a Quote</Link>
           </Button>
-          <Button asChild size="lg" variant="outline">
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="border-white/40 bg-transparent text-white hover:border-white hover:bg-white/10"
+          >
             <Link href="/contact">Contact Us</Link>
           </Button>
         </div>

@@ -112,14 +112,18 @@ export default async function ContactPage() {
         </div>
       </div>
 
-      <div className="mx-auto mt-12 flex max-w-4xl flex-col items-center justify-between gap-4 rounded-2xl bg-secondary px-6 py-8 text-center text-secondary-foreground md:flex-row md:text-left">
+      <div className="mx-auto mt-12 flex max-w-4xl flex-col items-center justify-between gap-4 rounded-lg bg-neutral-900 px-6 py-8 text-center text-neutral-50 md:flex-row md:text-left">
         <div>
           <h2 className="text-h3">Have a bulk requirement?</h2>
-          <p className="text-body-sm mt-1 text-secondary-foreground/70">
+          <p className="text-body-sm mt-1 text-neutral-300">
             Share your specs and get a tailored quotation.
           </p>
         </div>
-        <Button asChild size="lg" className="shrink-0">
+        <Button
+          asChild
+          size="lg"
+          className="shrink-0 bg-white text-neutral-900 shadow-sm hover:bg-neutral-200"
+        >
           <Link href="/rfq">Request a Quote</Link>
         </Button>
       </div>

@@ -14,9 +14,11 @@ export function FeaturedIndustries({
   return (
     <Section className="bg-muted/30">
       <SectionHeading
+        eyebrow="Sectors"
         title="Industries we serve"
         subtitle="Tailored procurement for every sector."
         href="/industries"
+        align="center"
       />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {industries.map((industry) => (

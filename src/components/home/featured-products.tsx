@@ -12,9 +12,11 @@ export function FeaturedProducts({
   return (
     <Section>
       <SectionHeading
+        eyebrow="Products of the week"
         title="Featured products"
         subtitle="Popular picks across categories."
         href="/products"
+        align="center"
       />
       <div className="no-scrollbar -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 lg:grid-cols-4">
         {products.map((product) => (

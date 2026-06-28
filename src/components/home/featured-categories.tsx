@@ -14,10 +14,12 @@ export function FeaturedCategories({
   return (
     <Section>
       <SectionHeading
+        eyebrow="Catalog"
         title="Shop by category"
         subtitle="Bulk uniforms engineered for every institution."
         href="/products"
         linkLabel="All products"
+        align="center"
       />
       <div className="no-scrollbar -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3">
         {categories.map((category) => (

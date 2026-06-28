@@ -13,7 +13,11 @@ export function TestimonialsSection({
 }) {
   return (
     <Section>
-      <SectionHeading title="Trusted by institutions" />
+      <SectionHeading
+        eyebrow="Testimonials"
+        title="Trusted by institutions"
+        align="center"
+      />
       <div className="no-scrollbar -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
         {testimonials.map((testimonial) => (
           <div
