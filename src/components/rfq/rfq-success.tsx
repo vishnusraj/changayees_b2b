@@ -6,8 +6,8 @@ import { WhatsAppCTA } from '@/components/navigation/whatsapp-cta';
 /** RfqSuccess — confirmation screen with the reference number + next steps. */
 export function RfqSuccess({ rfqNumber }: { rfqNumber: string }) {
   return (
-    <div className="mx-auto max-w-md space-y-5 py-6 text-center">
-      <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success/10 text-success">
+    <div className="mx-auto max-w-md space-y-5 py-10 text-center">
+      <span className="shadow-glow mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-subtle text-brand ring-1 ring-brand/15">
         <CheckCircle2 className="h-8 w-8" aria-hidden />
       </span>
       <div className="space-y-2">
@@ -18,11 +18,13 @@ export function RfqSuccess({ rfqNumber }: { rfqNumber: string }) {
         </p>
       </div>
 
-      <div className="rounded-lg border border-border bg-muted/40 p-4">
-        <p className="text-caption text-muted-foreground">
+      <div className="rounded-xl border border-border bg-card p-5 shadow-premium">
+        <p className="text-overline text-muted-foreground">
           Your reference number
         </p>
-        <p className="text-h3 mt-1 font-mono tracking-wide">{rfqNumber}</p>
+        <p className="text-h3 mt-1 font-mono tracking-wide text-brand">
+          {rfqNumber}
+        </p>
       </div>
 
       <WhatsAppCTA
@@ -35,7 +37,7 @@ export function RfqSuccess({ rfqNumber }: { rfqNumber: string }) {
         <Button asChild variant="outline" fullWidth>
           <Link href="/products">Browse products</Link>
         </Button>
-        <Button asChild fullWidth>
+        <Button asChild variant="accent" fullWidth>
           <Link href="/">Home</Link>
         </Button>
       </div>

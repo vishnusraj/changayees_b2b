@@ -225,13 +225,25 @@ export function RfqWizard({
 
   return (
     <div className="mx-auto max-w-xl">
-      <div className="mb-5 flex items-center justify-between">
-        <h1 className="text-h2">Request a Quote</h1>
-        {ready && (
-          <span className="text-caption text-muted-foreground">
-            Draft auto-saved
-          </span>
-        )}
+      <div className="mb-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <span className="text-overline inline-flex w-fit items-center gap-1.5 rounded-full border border-brand/20 bg-brand-subtle px-3 py-1 text-brand">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden />
+              Get a quote
+            </span>
+            <h1 className="text-h2">Request a Quote</h1>
+          </div>
+          {ready && (
+            <span className="text-caption mt-1 shrink-0 text-muted-foreground">
+              Draft auto-saved
+            </span>
+          )}
+        </div>
+        <p className="text-body mt-2 text-muted-foreground">
+          Tell us your requirements — we’ll send a tailored quotation within
+          hours. No cart, no checkout.
+        </p>
       </div>
 
       <Card className="p-5 md:p-6">
@@ -293,10 +305,10 @@ export function RfqWizard({
                           onClick={() => toggleCategory(category)}
                           aria-pressed={active}
                           className={cn(
-                            'text-body-sm focus-ring rounded-full border px-3 py-1.5 font-medium transition-colors',
+                            'text-body-sm focus-ring rounded-full border px-3.5 py-1.5 font-medium transition-colors',
                             active
-                              ? 'border-primary bg-primary text-primary-foreground'
-                              : 'border-border text-muted-foreground hover:text-foreground',
+                              ? 'border-brand bg-brand text-brand-foreground shadow-glow'
+                              : 'border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground',
                           )}
                         >
                           {category}
@@ -361,7 +373,7 @@ export function RfqWizard({
           {step === 5 && (
             <div className="space-y-4">
               <h2 className="text-h4">Review your request</h2>
-              <dl className="divide-y divide-border rounded-lg border border-border">
+              <dl className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-muted/30">
                 <ReviewRow label="Institution" value={form.name} />
                 <ReviewRow label="Contact" value={form.contactPerson} />
                 <ReviewRow label="Phone" value={form.phone} />
@@ -413,11 +425,16 @@ export function RfqWizard({
             </Button>
           )}
           {step < 5 ? (
-            <Button fullWidth onClick={next}>
+            <Button variant="accent" fullWidth onClick={next}>
               Continue
             </Button>
           ) : (
-            <Button fullWidth loading={submitting} onClick={submit}>
+            <Button
+              variant="accent"
+              fullWidth
+              loading={submitting}
+              onClick={submit}
+            >
               Submit RFQ
             </Button>
           )}
