@@ -21,7 +21,7 @@ export function MobileHeader() {
     <>
       <header className="pt-safe sticky top-0 z-40 w-full border-b border-border bg-background/90 backdrop-blur md:hidden">
         <div className="flex h-14 items-center justify-between px-4">
-          <Logo priority height={32} />
+          <Logo priority height={40} />
           <div className="flex items-center gap-1">
             <button
               type="button"

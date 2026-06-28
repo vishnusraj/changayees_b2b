@@ -14,7 +14,7 @@ export function DesktopHeader() {
     <header className="sticky top-0 z-40 hidden w-full border-b border-border bg-background/80 backdrop-blur md:block">
       <div className="container flex h-16 items-center justify-between gap-6">
         <div className="flex items-center gap-8">
-          <Logo priority height={40} />
+          <Logo priority height={48} />
           <DesktopNav />
         </div>
 

@@ -77,6 +77,8 @@ export const FEATURED_PRODUCTS: ProductCardData[] = [
     shortDescription: 'Wrinkle-resistant poly-cotton, custom embroidery.',
     moq: 100,
     categoryName: 'School Uniforms',
+    imageUrl:
+      'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&h=1000&q=70&auto=format&fit=crop',
   },
   {
     id: 'p2',
@@ -85,6 +87,8 @@ export const FEATURED_PRODUCTS: ProductCardData[] = [
     shortDescription: 'Tailored fit with optional logo branding.',
     moq: 50,
     categoryName: 'Corporate Uniforms',
+    imageUrl:
+      'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&h=1000&q=70&auto=format&fit=crop',
   },
   {
     id: 'p3',
@@ -93,6 +97,8 @@ export const FEATURED_PRODUCTS: ProductCardData[] = [
     shortDescription: 'Antimicrobial, full-sleeve, breathable fabric.',
     moq: 75,
     categoryName: 'Lab Coats',
+    imageUrl:
+      'https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&h=1000&q=70&auto=format&fit=crop',
   },
   {
     id: 'p4',
@@ -101,6 +107,8 @@ export const FEATURED_PRODUCTS: ProductCardData[] = [
     shortDescription: 'Moisture-wicking with sublimated team design.',
     moq: 60,
     categoryName: 'Sports Uniforms',
+    imageUrl:
+      'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&h=1000&q=70&auto=format&fit=crop',
   },
 ];
 

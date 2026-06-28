@@ -114,7 +114,11 @@ export const chartPalette = [
 
 /** The official brand asset (see CHANGAYEES_DESIGN_SYSTEM.md §28). */
 export const brandAsset = {
-  /** Primary logo. NOTE: low-res raster — replace with SVG kit before launch. */
-  logo: '/logo/images.png',
+  /**
+   * Primary logo — transparent-background PNG (white background stripped from
+   * the original /logo/images.png). NOTE: low-res raster — replace with an SVG
+   * kit before launch.
+   */
+  logo: '/logo/changayees-logo.png',
   alt: 'Changayees',
 } as const;
