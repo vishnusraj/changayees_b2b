@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Download } from 'lucide-react';
+import { Download, Check } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -135,10 +135,11 @@ export default async function ProductDetailPage({
 
         <div className="space-y-5">
           <div className="space-y-2">
-            <span className="text-overline text-muted-foreground">
+            <span className="text-overline inline-flex w-fit items-center gap-1.5 rounded-full border border-brand/20 bg-brand-subtle px-3 py-1 text-brand">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden />
               {product.categoryName}
             </span>
-            <h1 className="text-h2">{product.name}</h1>
+            <h1 className="text-h2 mt-1">{product.name}</h1>
             {product.shortDescription && (
               <p className="text-body text-muted-foreground">
                 {product.shortDescription}
@@ -161,15 +162,17 @@ export default async function ProductDetailPage({
             </p>
           )}
 
-          <div className="rounded-lg border border-border bg-muted/30 p-4">
+          <div className="rounded-xl border border-border bg-card p-5 shadow-premium">
             <h2 className="text-h4 mb-3">Customization available</h2>
-            <ul className="text-body-sm grid gap-1.5 text-muted-foreground sm:grid-cols-2">
+            <ul className="text-body-sm grid gap-2.5 sm:grid-cols-2">
               {CUSTOMIZATION.map((item) => (
-                <li key={item} className="flex items-center gap-2">
+                <li key={item} className="flex items-center gap-2.5">
                   <span
-                    className="h-1.5 w-1.5 rounded-full bg-primary"
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-subtle text-brand ring-1 ring-brand/10"
                     aria-hidden
-                  />
+                  >
+                    <Check className="h-3 w-3" />
+                  </span>
                   {item}
                 </li>
               ))}
@@ -191,9 +194,11 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      <section className="mt-10 space-y-3">
+      <section className="mt-12 space-y-4">
         <h2 className="text-h3">Specifications</h2>
-        <ProductSpecifications groups={groups} />
+        <div className="overflow-hidden rounded-xl border border-border bg-card p-2 shadow-premium">
+          <ProductSpecifications groups={groups} />
+        </div>
       </section>
 
       <section className="mt-12">

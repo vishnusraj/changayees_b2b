@@ -33,7 +33,7 @@ export function ProductActions({
     <>
       {/* Desktop inline actions */}
       <div className="hidden flex-wrap gap-3 md:flex">
-        <Button asChild size="lg">
+        <Button asChild variant="accent" size="lg">
           <Link href={rfqHref}>Request Quote</Link>
         </Button>
         <Button asChild size="lg" variant="whatsapp">
@@ -61,7 +61,7 @@ export function ProductActions({
 
       {/* Mobile sticky CTA (suppresses bottom nav + floating WhatsApp) */}
       <StickyCTA>
-        <Button asChild fullWidth>
+        <Button asChild variant="accent" fullWidth>
           <Link href={rfqHref}>Request Quote</Link>
         </Button>
         <Button asChild fullWidth variant="whatsapp">

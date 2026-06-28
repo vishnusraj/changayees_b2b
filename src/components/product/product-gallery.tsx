@@ -25,7 +25,7 @@ export function ProductGallery({ images }: { images: ProductImage[] }) {
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
+      <div className="relative aspect-square overflow-hidden rounded-xl border border-border bg-muted shadow-premium">
         <Image
           src={current.url}
           alt={current.alt ?? 'Product image'}
@@ -45,8 +45,10 @@ export function ProductGallery({ images }: { images: ProductImage[] }) {
               aria-label={`View image ${index + 1}`}
               aria-current={index === active}
               className={cn(
-                'focus-ring relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-2',
-                index === active ? 'border-primary' : 'border-transparent',
+                'focus-ring relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-colors',
+                index === active
+                  ? 'border-brand'
+                  : 'border-border hover:border-foreground/30',
               )}
             >
               <Image
